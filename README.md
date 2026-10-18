@@ -22,8 +22,12 @@ npm run dev                  # http://localhost:3000  (the API must be running)
 - **Customer:** register (date of birth, 18+ check), log in, account settings, cart (saved in
   the browser and re-checked against the server), checkout with cash on delivery, order
   history, cancelling an order
+- **Contact:** a strip with the phone and WhatsApp numbers, contact details in the footer, a
+  floating WhatsApp button, and "Ask on WhatsApp" on product pages (all set from admin
+  Settings)
 - **Admin (`/admin`):** dashboard, orders (status changes), products (create and edit, image
-  upload), categories and customers
+  upload), categories, customers, promotions (hero banners on the home page) and store
+  settings
 
 ## Structure
 
