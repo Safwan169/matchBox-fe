@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
@@ -5,7 +6,23 @@ import { AddToCart } from "@/components/product/AddToCart";
 import { Price } from "@/components/product/Price";
 import { ProductGallery } from "@/components/product/ProductGallery";
 import { ApiError, apiGet } from "@/lib/api";
+import { assetUrl } from "@/lib/assets";
 import type { ApiItem, Category, Product } from "@/lib/types";
+
+// Identical fetches in one request are de-duplicated, so this shares the page's request.
+export async function generateMetadata({ params }: PageProps<"/products/[slug]">): Promise<Metadata> {
+  const { slug } = await params;
+  try {
+    const { data } = await apiGet<ApiItem<Product>>(`/products/${encodeURIComponent(slug)}`);
+    return {
+      title: data.name,
+      description: data.description.slice(0, 160) || `${data.name} at MatchBox`,
+      openGraph: data.images[0] ? { images: [assetUrl(data.images[0])] } : undefined,
+    };
+  } catch {
+    return { title: "Product not found" };
+  }
+}
 
 export default function ProductPage({ params }: PageProps<"/products/[slug]">) {
   return (

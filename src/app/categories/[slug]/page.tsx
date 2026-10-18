@@ -1,9 +1,20 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { ProductGridSkeleton } from "@/components/product/ProductCard";
 import { ProductListing } from "@/components/product/ProductListing";
 import { ApiError, apiGet } from "@/lib/api";
 import type { ApiItem, Category } from "@/lib/types";
+
+export async function generateMetadata({ params }: PageProps<"/categories/[slug]">): Promise<Metadata> {
+  const { slug } = await params;
+  try {
+    const { data } = await apiGet<ApiItem<Category>>(`/categories/${encodeURIComponent(slug)}`);
+    return { title: data.name, description: data.description || `Shop ${data.name} at MatchBox` };
+  } catch {
+    return { title: "Category not found" };
+  }
+}
 
 export default function CategoryPage({ params, searchParams }: PageProps<"/categories/[slug]">) {
   return (
