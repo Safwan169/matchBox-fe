@@ -14,6 +14,14 @@ interface ApiOptions extends Omit<RequestInit, "body"> {
   body?: unknown;
 }
 
+// On the Next.js server, identify ourselves so server-rendered requests (which all share
+// this server's IP) skip the API's per-IP rate limits. The key is server-only: without the
+// NEXT_PUBLIC_ prefix it is never included in the browser bundle.
+const serverHeaders: Record<string, string> =
+  typeof window === "undefined" && process.env.INTERNAL_API_KEY
+    ? { "X-Internal-Key": process.env.INTERNAL_API_KEY }
+    : {};
+
 // Works in both server and client components. Sends cookies so authenticated
 // requests from the browser carry the session.
 export async function api<T>(path: string, { body, headers, ...init }: ApiOptions = {}): Promise<T> {
@@ -22,6 +30,7 @@ export async function api<T>(path: string, { body, headers, ...init }: ApiOption
     credentials: "include",
     ...init,
     headers: {
+      ...serverHeaders,
       ...(body !== undefined && !isForm ? { "Content-Type": "application/json" } : {}),
       ...headers,
     },
