@@ -24,7 +24,30 @@ export interface Product {
   ageRestricted: boolean;
   isFeatured: boolean;
   isActive: boolean;
+  ratingAverage: number;
+  ratingCount: number;
   createdAt: string;
+}
+
+export interface Review {
+  id: string;
+  authorName: string;
+  rating: number;
+  comment: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface RatingSummary {
+  average: number;
+  count: number;
+  distribution: Record<"1" | "2" | "3" | "4" | "5", number>;
+}
+
+export interface ReviewList {
+  data: Review[];
+  meta: PageMeta;
+  summary: RatingSummary;
 }
 
 export type UserRole = "customer" | "admin";

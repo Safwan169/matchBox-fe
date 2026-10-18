@@ -17,6 +17,18 @@ export type AdminPromotion = Promotion & {
   endsAt: string | null;
   createdAt: string;
 };
+export type AdminReview = {
+  id: string;
+  productId: string;
+  userId: string;
+  authorName: string;
+  rating: number;
+  comment: string;
+  status: "published" | "hidden";
+  createdAt: string;
+  product: { name: string; slug: string } | null;
+};
+
 export type AdminCustomer = User & { orderCount: number };
 export type AdminOrder = Order & { customer: User | null };
 

@@ -5,6 +5,8 @@ import { Suspense } from "react";
 import { AddToCart } from "@/components/product/AddToCart";
 import { Price } from "@/components/product/Price";
 import { ProductGrid, ProductGridSkeleton } from "@/components/product/ProductCard";
+import { ReviewsSection } from "@/components/review/ReviewsSection";
+import { RatingBadge } from "@/components/review/Stars";
 import { ProductGallery } from "@/components/product/ProductGallery";
 import { ApiError, apiGet } from "@/lib/api";
 import { WhatsAppIcon } from "@/components/icons";
@@ -33,11 +35,19 @@ export default function ProductPage({ params }: PageProps<"/products/[slug]">) {
       <Suspense fallback={<ProductSkeleton />}>
         <ProductDetail params={params} />
       </Suspense>
+      <Suspense fallback={null}>
+        <Reviews params={params} />
+      </Suspense>
       <Suspense fallback={<div className="mt-16"><ProductGridSkeleton count={4} /></div>}>
         <RelatedProducts params={params} />
       </Suspense>
     </section>
   );
+}
+
+async function Reviews({ params }: Pick<PageProps<"/products/[slug]">, "params">) {
+  const { slug } = await params;
+  return <ReviewsSection slug={slug} />;
 }
 
 async function RelatedProducts({ params }: Pick<PageProps<"/products/[slug]">, "params">) {
@@ -97,6 +107,11 @@ async function ProductDetail({ params }: Pick<PageProps<"/products/[slug]">, "pa
         <div>
           {product.brand && <p className="text-sm tracking-wide text-brand-brown/70 uppercase">{product.brand}</p>}
           <h1 className="mt-1 text-3xl font-bold">{product.name}</h1>
+          {product.ratingCount > 0 && (
+            <a href="#reviews" className="mt-2 inline-block hover:underline">
+              <RatingBadge average={product.ratingAverage} count={product.ratingCount} />
+            </a>
+          )}
           <Price price={product.price} compareAtPrice={product.compareAtPrice} className="mt-4 text-2xl" />
 
           <p className={`mt-3 text-sm font-semibold ${inStock ? "text-green-700" : "text-brand-red"}`}>

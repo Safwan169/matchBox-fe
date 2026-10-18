@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Product } from "@/lib/types";
+import { RatingBadge } from "@/components/review/Stars";
 import { Price } from "./Price";
 import { ProductImage } from "./ProductImage";
 
@@ -28,6 +29,7 @@ export function ProductCard({ product }: { product: Product }) {
       <div className="flex flex-1 flex-col gap-1 p-3">
         {product.brand && <p className="text-xs tracking-wide text-brand-brown/70 uppercase">{product.brand}</p>}
         <h3 className="line-clamp-2 font-semibold group-hover:text-brand-red">{product.name}</h3>
+        <RatingBadge average={product.ratingAverage} count={product.ratingCount} className="text-xs" />
         <Price price={product.price} compareAtPrice={product.compareAtPrice} className="mt-auto pt-1" />
       </div>
     </Link>
