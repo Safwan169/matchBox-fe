@@ -27,6 +27,18 @@ export interface Product {
   createdAt: string;
 }
 
+export type UserRole = "customer" | "admin";
+
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  role: UserRole;
+  dateOfBirth: string;
+  createdAt: string;
+}
+
 export interface PageMeta {
   total: number;
   page: number;

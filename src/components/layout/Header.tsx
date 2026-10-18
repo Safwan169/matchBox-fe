@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Suspense } from "react";
+import { AccountLinks } from "./AccountLinks";
 import { CategoryNav } from "./CategoryNav";
 import { Logo } from "./Logo";
 import { SearchBar } from "./SearchBar";
@@ -11,9 +12,7 @@ export function Header() {
         <Logo />
         <SearchBar className="order-last w-full md:order-none md:w-auto md:flex-1 md:max-w-md" />
         <nav aria-label="Account" className="ml-auto flex items-center gap-4 text-sm font-semibold">
-          <Link href="/login" className="hover:text-brand-flame">
-            Account
-          </Link>
+          <AccountLinks />
           <Link href="/cart" className="hover:text-brand-flame">
             Cart
           </Link>
