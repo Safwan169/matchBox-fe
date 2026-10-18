@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
+import { AddToCart } from "@/components/product/AddToCart";
 import { Price } from "@/components/product/Price";
 import { ProductGallery } from "@/components/product/ProductGallery";
 import { ApiError, apiGet } from "@/lib/api";
@@ -58,6 +59,10 @@ async function ProductDetail({ params }: Pick<PageProps<"/products/[slug]">, "pa
           <p className={`mt-3 text-sm font-semibold ${inStock ? "text-green-700" : "text-brand-red"}`}>
             {inStock ? (product.stock < 10 ? `Only ${product.stock} left` : "In stock") : "Out of stock"}
           </p>
+
+          <div className="mt-6">
+            <AddToCart product={product} />
+          </div>
 
           {product.description && (
             <div className="mt-8 border-t border-brand-brown/15 pt-6">
