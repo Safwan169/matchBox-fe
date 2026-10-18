@@ -1,4 +1,4 @@
-import type { Category, Order, OrderStatus, Product, Promotion, User } from "./types";
+import type { Category, HomeSection, Order, OrderStatus, Product, Promotion, User } from "./types";
 
 export interface AdminStats {
   orders: { totalOrders: number; revenue: number; byStatus: Record<OrderStatus, number> };
@@ -28,6 +28,8 @@ export type AdminReview = {
   createdAt: string;
   product: { name: string; slug: string } | null;
 };
+
+export type AdminHomeSection = HomeSection & { isActive: boolean; sortOrder: number };
 
 export type AdminCustomer = User & { orderCount: number };
 export type AdminOrder = Order & { customer: User | null };

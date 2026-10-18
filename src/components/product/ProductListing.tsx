@@ -22,12 +22,14 @@ export async function ProductListing({ searchParams, basePath, category }: Props
   const sp = await searchParams;
   const search = first(sp.search);
   const sort = first(sp.sort);
+  const onSale = first(sp.onSale) === "true";
   const page = first(sp.page);
 
   const query = new URLSearchParams({ limit: String(PAGE_SIZE) });
   if (category) query.set("category", category);
   if (search) query.set("search", search);
   if (sort) query.set("sort", sort);
+  if (onSale) query.set("onSale", "true");
 
   const { data: products, meta } = await apiGet<ApiList<Product>>(`/products?${query}${page ? `&page=${encodeURIComponent(page)}` : ""}`);
 
@@ -36,6 +38,7 @@ export async function ProductListing({ searchParams, basePath, category }: Props
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <p className="text-sm text-brand-brown">
           {search && <>Results for “<strong>{search}</strong>” · </>}
+          {onSale && <>On sale · </>}
           {meta.total} {meta.total === 1 ? "product" : "products"}
         </p>
         <SortSelect />
@@ -51,7 +54,7 @@ export async function ProductListing({ searchParams, basePath, category }: Props
       )}
 
       <noscript>
-        <Pagination page={meta.page} totalPages={meta.totalPages} basePath={basePath} params={{ search, sort }} />
+        <Pagination page={meta.page} totalPages={meta.totalPages} basePath={basePath} params={{ search, sort, onSale: onSale ? "true" : undefined }} />
       </noscript>
     </>
   );

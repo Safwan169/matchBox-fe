@@ -116,6 +116,33 @@ export interface OrderQuote {
   total: number;
 }
 
+export type HomeSectionType =
+  | "hero"
+  | "categories"
+  | "featured_products"
+  | "new_arrivals"
+  | "on_sale"
+  | "category_products"
+  | "banner"
+  | "text";
+
+export interface HomeSectionConfig {
+  limit?: number;
+  categoryId?: string;
+  categorySlug?: string; // public API only
+  image?: string;
+  link?: string;
+  body?: string;
+}
+
+/** Home page section (GET /home-sections). */
+export interface HomeSection {
+  id: string;
+  type: HomeSectionType;
+  title: string;
+  config: HomeSectionConfig;
+}
+
 /** Public hero banner (GET /promotions). */
 export interface Promotion {
   id: string;
