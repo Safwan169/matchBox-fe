@@ -12,6 +12,7 @@ const links = [
   { href: "/admin/products", label: "Products" },
   { href: "/admin/categories", label: "Categories" },
   { href: "/admin/customers", label: "Customers" },
+  { href: "/admin/settings", label: "Settings" },
 ];
 
 const AdminReadyContext = createContext(false);

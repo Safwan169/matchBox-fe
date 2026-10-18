@@ -6,7 +6,9 @@ import { AddToCart } from "@/components/product/AddToCart";
 import { Price } from "@/components/product/Price";
 import { ProductGallery } from "@/components/product/ProductGallery";
 import { ApiError, apiGet } from "@/lib/api";
+import { WhatsAppIcon } from "@/components/icons";
 import { assetUrl } from "@/lib/assets";
+import { getStoreSettings, whatsappHref } from "@/lib/contact";
 import type { ApiItem, Category, Product } from "@/lib/types";
 
 // Identical fetches in one request are de-duplicated, so this shares the page's request.
@@ -45,9 +47,12 @@ async function ProductDetail({ params }: Pick<PageProps<"/products/[slug]">, "pa
     throw err;
   }
 
-  const categories = await apiGet<ApiItem<Category[]>>("/categories")
-    .then((r) => r.data)
-    .catch(() => [] as Category[]);
+  const [categories, settings] = await Promise.all([
+    apiGet<ApiItem<Category[]>>("/categories")
+      .then((r) => r.data)
+      .catch(() => [] as Category[]),
+    getStoreSettings(),
+  ]);
   const category = categories.find((c) => c.id === product.categoryId);
   const inStock = product.stock > 0;
 
@@ -80,6 +85,17 @@ async function ProductDetail({ params }: Pick<PageProps<"/products/[slug]">, "pa
           <div className="mt-6">
             <AddToCart product={product} />
           </div>
+
+          {settings.whatsapp && (
+            <a
+              href={whatsappHref(settings.whatsapp, `Hi MatchBox! I'm interested in "${product.name}" (${product.slug}).`)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-[#128C7E] hover:underline"
+            >
+              <WhatsAppIcon className="h-4 w-4" /> Ask about this product on WhatsApp
+            </a>
+          )}
 
           {product.description && (
             <div className="mt-8 border-t border-brand-brown/15 pt-6">

@@ -93,6 +93,14 @@ export interface OrderQuote {
   total: number;
 }
 
+export interface StoreSettings {
+  phone: string; // "01XXXXXXXXX" or ""
+  whatsapp: string; // "01XXXXXXXXX" or ""
+  email: string;
+  address: string;
+  facebookUrl: string;
+}
+
 export interface PageMeta {
   total: number;
   page: number;
