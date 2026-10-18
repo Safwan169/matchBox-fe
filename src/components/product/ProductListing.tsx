@@ -1,7 +1,7 @@
 import { Pagination } from "@/components/Pagination";
 import { apiGet } from "@/lib/api";
 import type { ApiList, Product } from "@/lib/types";
-import { ProductGrid } from "./ProductCard";
+import { InfiniteProductGrid } from "./InfiniteProductGrid";
 import { SortSelect } from "./SortSelect";
 
 type SearchParams = Record<string, string | string[] | undefined>;
@@ -14,20 +14,22 @@ interface Props {
   category?: string; // category slug
 }
 
-// Shared product grid + sort + pagination for /products and /categories/[slug].
+const PAGE_SIZE = 12;
+
+// Shared product list for /products and /categories/[slug]: the first page is rendered on
+// the server; more pages load as the user scrolls. Page links remain for no-JS and crawlers.
 export async function ProductListing({ searchParams, basePath, category }: Props) {
   const sp = await searchParams;
   const search = first(sp.search);
   const sort = first(sp.sort);
   const page = first(sp.page);
 
-  const query = new URLSearchParams({ limit: "12" });
+  const query = new URLSearchParams({ limit: String(PAGE_SIZE) });
   if (category) query.set("category", category);
   if (search) query.set("search", search);
   if (sort) query.set("sort", sort);
-  if (page) query.set("page", page);
 
-  const { data: products, meta } = await apiGet<ApiList<Product>>(`/products?${query}`);
+  const { data: products, meta } = await apiGet<ApiList<Product>>(`/products?${query}${page ? `&page=${encodeURIComponent(page)}` : ""}`);
 
   return (
     <>
@@ -40,14 +42,17 @@ export async function ProductListing({ searchParams, basePath, category }: Props
       </div>
 
       {products.length > 0 ? (
-        <ProductGrid products={products} />
+        // key: start a fresh list when the search, sort or category changes
+        <InfiniteProductGrid key={`${query}|${meta.page}`} initial={products} query={query.toString()} page={meta.page} totalPages={meta.totalPages} />
       ) : (
         <p className="rounded-lg border border-dashed border-brand-brown/30 py-16 text-center text-brand-brown">
           No products found.
         </p>
       )}
 
-      <Pagination page={meta.page} totalPages={meta.totalPages} basePath={basePath} params={{ search, sort }} />
+      <noscript>
+        <Pagination page={meta.page} totalPages={meta.totalPages} basePath={basePath} params={{ search, sort }} />
+      </noscript>
     </>
   );
 }
