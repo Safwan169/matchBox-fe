@@ -1,7 +1,8 @@
 // Prices are stored in poisha (1/100 BDT).
 export function formatPrice(poisha: number) {
   const taka = poisha / 100;
-  return `৳${taka.toLocaleString("en-IN", { maximumFractionDigits: 2 })}`;
+  const decimals = Number.isInteger(taka) ? 0 : 2; // ৳350, but ৳799.50 (not ৳799.5)
+  return `৳${taka.toLocaleString("en-IN", { minimumFractionDigits: decimals, maximumFractionDigits: decimals })}`;
 }
 
 export function formatDate(value: string | Date) {
