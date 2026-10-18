@@ -6,6 +6,7 @@ import { useState, type FormEvent } from "react";
 import { Alert, Button, Card, Field, PageTitle, buttonClass, errorMessage } from "@/components/ui";
 import { useRequireAuth } from "@/context/AuthContext";
 import { api } from "@/lib/api";
+import { BD_PHONE_HINT, BD_PHONE_PATTERN } from "@/lib/phone";
 import type { ApiItem, User } from "@/lib/types";
 
 export default function AccountPage() {
@@ -35,6 +36,7 @@ export default function AccountPage() {
 
       <div className="mt-8 grid gap-6 md:grid-cols-2">
         <ProfileForm user={user} onSaved={setUser} />
+        <AddressForm user={user} onSaved={setUser} />
         <PasswordForm />
       </div>
     </section>
@@ -70,9 +72,58 @@ function ProfileForm({ user, onSaved }: { user: User; onSaved(user: User): void 
         {status && <Alert kind={status.kind}>{status.text}</Alert>}
         <Field label="Email" name="email" value={user.email} disabled readOnly />
         <Field label="Full name" name="name" defaultValue={user.name} required minLength={2} />
-        <Field label="Phone" name="phone" type="tel" defaultValue={user.phone} />
+        <Field label="Mobile number" name="phone" type="tel" defaultValue={user.phone} required pattern={BD_PHONE_PATTERN} hint={BD_PHONE_HINT} />
         <Button type="submit" disabled={saving}>
           {saving ? "Saving…" : "Save profile"}
+        </Button>
+      </form>
+    </Card>
+  );
+}
+
+function AddressForm({ user, onSaved }: { user: User; onSaved(user: User): void }) {
+  const [status, setStatus] = useState<{ kind: "error" | "success"; text: string } | null>(null);
+  const [saving, setSaving] = useState(false);
+  const a = user.address;
+
+  async function onSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const form = new FormData(e.currentTarget);
+    setSaving(true);
+    try {
+      const { data } = await api<ApiItem<User>>("/auth/me", {
+        method: "PATCH",
+        body: {
+          address: {
+            addressLine: form.get("addressLine"),
+            area: form.get("area"),
+            city: form.get("city"),
+            postalCode: form.get("postalCode"),
+          },
+        },
+      });
+      onSaved(data);
+      setStatus({ kind: "success", text: "Address saved. It will be used at checkout." });
+    } catch (err) {
+      setStatus({ kind: "error", text: errorMessage(err) });
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <Card>
+      <h2 className="text-lg font-semibold">Delivery address</h2>
+      <form onSubmit={onSubmit} className="mt-4 space-y-4">
+        {status && <Alert kind={status.kind}>{status.text}</Alert>}
+        <Field label="Address" name="addressLine" defaultValue={a?.addressLine} required minLength={5} autoComplete="street-address" placeholder="House, road, block" />
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Field label="Area" name="area" defaultValue={a?.area} placeholder="e.g. Dhanmondi" />
+          <Field label="City" name="city" defaultValue={a?.city ?? "Dhaka"} required autoComplete="address-level2" />
+        </div>
+        <Field label="Postal code" name="postalCode" defaultValue={a?.postalCode} autoComplete="postal-code" />
+        <Button type="submit" disabled={saving}>
+          {saving ? "Saving…" : "Save address"}
         </Button>
       </form>
     </Card>

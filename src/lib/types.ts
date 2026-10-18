@@ -29,11 +29,19 @@ export interface Product {
 
 export type UserRole = "customer" | "admin";
 
+export interface SavedAddress {
+  addressLine: string;
+  area: string;
+  city: string;
+  postalCode: string;
+}
+
 export interface User {
   id: string;
   name: string;
   email: string;
   phone: string;
+  address: SavedAddress | null;
   role: UserRole;
   dateOfBirth: string;
   createdAt: string;

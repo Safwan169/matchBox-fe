@@ -2,40 +2,37 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { OrderTotals } from "@/components/order/OrderSummary";
 import { Alert, Button, Card, Field, PageTitle, TextArea, buttonClass, errorMessage } from "@/components/ui";
 import { useRequireAuth } from "@/context/AuthContext";
 import { useCart } from "@/context/CartContext";
 import { api } from "@/lib/api";
 import { formatPrice } from "@/lib/format";
-import type { ApiItem, Order, OrderQuote, ShippingAddress } from "@/lib/types";
-
-const ADDRESS_KEY = "mb_address";
+import { BD_PHONE_HINT, BD_PHONE_PATTERN } from "@/lib/phone";
+import type { ApiItem, Order, OrderQuote, ShippingAddress, User } from "@/lib/types";
 
 const emptyAddress: ShippingAddress = { fullName: "", phone: "", addressLine: "", area: "", city: "Dhaka", postalCode: "" };
 
 export default function CheckoutPage() {
-  const { user, allowed } = useRequireAuth();
+  const { user, allowed, setUser } = useRequireAuth();
   const cart = useCart();
   const router = useRouter();
 
   const [address, setAddress] = useState<ShippingAddress>(emptyAddress);
+  const [saveAddress, setSaveAddress] = useState(true);
   const [notes, setNotes] = useState("");
   const [quote, setQuote] = useState<OrderQuote | null>(null);
   const [quoteError, setQuoteError] = useState("");
   const [submitError, setSubmitError] = useState("");
   const [placing, setPlacing] = useState(false);
+  const prefilled = useRef(false);
 
-  // Prefill from the last used address, falling back to the profile.
+  // Prefill once from the account: name, phone and saved delivery address.
   useEffect(() => {
-    if (!user) return;
-    let saved: Partial<ShippingAddress> = {};
-    try {
-      saved = JSON.parse(localStorage.getItem(ADDRESS_KEY) ?? "{}");
-    } catch {}
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time prefill from browser storage
-    setAddress((a) => ({ ...a, fullName: user.name, phone: user.phone, ...saved }));
+    if (!user || prefilled.current) return;
+    prefilled.current = true;
+    setAddress((a) => ({ ...a, fullName: user.name, phone: user.phone, ...user.address }));
   }, [user]);
 
   const lines = useMemo(() => cart.items.map((i) => ({ productId: i.productId, quantity: i.quantity })), [cart.items]);
@@ -80,11 +77,12 @@ export default function CheckoutPage() {
     try {
       const { data: order } = await api<ApiItem<Order>>("/orders", {
         method: "POST",
-        body: { items: lines, shippingAddress: address, notes },
+        body: { items: lines, shippingAddress: address, notes, saveAddress },
       });
-      try {
-        localStorage.setItem(ADDRESS_KEY, JSON.stringify(address));
-      } catch {}
+      if (saveAddress) {
+        // Refresh the account so the saved address shows up everywhere.
+        api<ApiItem<User>>("/auth/me").then((r) => setUser(r.data)).catch(() => {});
+      }
       cart.clear();
       router.replace(`/orders/${order.id}?placed=1`);
     } catch (err) {
@@ -103,7 +101,7 @@ export default function CheckoutPage() {
             <h2 className="text-lg font-semibold">Delivery address</h2>
             <div className="mt-4 grid gap-4 sm:grid-cols-2">
               <Field label="Full name" name="fullName" value={address.fullName} onChange={set("fullName")} required minLength={2} autoComplete="name" />
-              <Field label="Phone" name="phone" type="tel" value={address.phone} onChange={set("phone")} required autoComplete="tel" placeholder="01XXXXXXXXX" />
+              <Field label="Mobile number" name="phone" type="tel" value={address.phone} onChange={set("phone")} required pattern={BD_PHONE_PATTERN} hint={BD_PHONE_HINT} autoComplete="tel" placeholder="01XXXXXXXXX" />
               <div className="sm:col-span-2">
                 <Field label="Address" name="addressLine" value={address.addressLine} onChange={set("addressLine")} required minLength={5} autoComplete="street-address" placeholder="House, road, block" />
               </div>
@@ -111,6 +109,10 @@ export default function CheckoutPage() {
               <Field label="City" name="city" value={address.city} onChange={set("city")} required autoComplete="address-level2" />
               <Field label="Postal code" name="postalCode" value={address.postalCode} onChange={set("postalCode")} autoComplete="postal-code" />
             </div>
+            <label className="mt-4 flex items-center gap-3 text-sm">
+              <input type="checkbox" checked={saveAddress} onChange={(e) => setSaveAddress(e.target.checked)} className="h-4 w-4 accent-brand-red" />
+              Save this address to my account for next time
+            </label>
             <div className="mt-4">
               <TextArea label="Order notes (optional)" name="notes" rows={2} maxLength={500} value={notes} onChange={(e) => setNotes(e.target.value)} />
             </div>

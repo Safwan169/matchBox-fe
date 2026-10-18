@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { Alert, Button, Field, errorMessage } from "@/components/ui";
 import { useAuth } from "@/context/AuthContext";
+import { BD_PHONE_HINT, BD_PHONE_PATTERN } from "@/lib/phone";
 import { safeNext } from "@/lib/safe-redirect";
 
 export function RegisterForm() {
@@ -45,7 +46,7 @@ export function RegisterForm() {
       <Alert>{error}</Alert>
       <Field label="Full name" name="name" autoComplete="name" required minLength={2} />
       <Field label="Email" name="email" type="email" autoComplete="email" required />
-      <Field label="Phone" name="phone" type="tel" autoComplete="tel" placeholder="01XXXXXXXXX" />
+      <Field label="Mobile number" name="phone" type="tel" autoComplete="tel" placeholder="01XXXXXXXXX" required pattern={BD_PHONE_PATTERN} hint={BD_PHONE_HINT} />
       <Field label="Date of birth" name="dateOfBirth" type="date" required hint="Used to confirm you are 18 or older." />
       <Field label="Password" name="password" type="password" autoComplete="new-password" required minLength={8} hint="At least 8 characters." />
       <Field label="Confirm password" name="confirm" type="password" autoComplete="new-password" required minLength={8} />
