@@ -1,4 +1,4 @@
-import type { Category, Order, OrderStatus, Product, User } from "./types";
+import type { Category, Order, OrderStatus, Product, Promotion, User } from "./types";
 
 export interface AdminStats {
   orders: { totalOrders: number; revenue: number; byStatus: Record<OrderStatus, number> };
@@ -9,6 +9,14 @@ export interface AdminStats {
 }
 
 export type AdminCategory = Category & { productCount: number };
+
+export type AdminPromotion = Promotion & {
+  sortOrder: number;
+  isActive: boolean;
+  startsAt: string | null;
+  endsAt: string | null;
+  createdAt: string;
+};
 export type AdminCustomer = User & { orderCount: number };
 export type AdminOrder = Order & { customer: User | null };
 

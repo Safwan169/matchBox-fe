@@ -13,7 +13,7 @@ export function ProductGallery({ images, name }: { images: string[]; name: strin
         alt={name}
         className="rounded-lg"
         sizes="(min-width: 768px) 50vw, 100vw"
-        priority
+        eager
       />
       {images.length > 1 && (
         <div className="mt-3 grid grid-cols-5 gap-2">

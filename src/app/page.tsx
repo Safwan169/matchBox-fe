@@ -1,30 +1,19 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
+import { HeroCarousel } from "@/components/home/HeroCarousel";
 import { ProductGrid, ProductGridSkeleton } from "@/components/product/ProductCard";
 import { apiGet } from "@/lib/api";
-import type { ApiItem, ApiList, Category, Product } from "@/lib/types";
+import type { ApiItem, ApiList, Category, Product, Promotion } from "@/lib/types";
 
 export default function Home() {
   return (
     <>
       <section className="mx-auto w-full max-w-6xl px-4 pt-6">
-        <div className="relative overflow-hidden rounded-xl">
-          <Image
-            src="/brand/cover.png"
-            alt="MatchBox — a row of matches with one lit"
-            width={3280}
-            height={1248}
-            className="h-auto w-full"
-            priority
-          />
-          <Link
-            href="/products"
-            className="absolute bottom-[12%] left-1/2 -translate-x-1/2 rounded-md bg-brand-flame px-5 py-2 text-sm font-bold text-brand-charcoal shadow hover:bg-brand-flame-light sm:px-8 sm:py-3 sm:text-base"
-          >
-            Shop now
-          </Link>
-        </div>
+        {/* The brand cover shows instantly, and stays when there are no live promotions. */}
+        <Suspense fallback={<DefaultHero />}>
+          <Hero />
+        </Suspense>
       </section>
 
       <section className="mx-auto w-full max-w-6xl px-4 pt-12">
@@ -46,6 +35,34 @@ export default function Home() {
         </div>
       </section>
     </>
+  );
+}
+
+async function Hero() {
+  const promotions = await apiGet<ApiItem<Promotion[]>>("/promotions")
+    .then((r) => r.data)
+    .catch(() => [] as Promotion[]);
+  return promotions.length > 0 ? <HeroCarousel promotions={promotions} /> : <DefaultHero />;
+}
+
+function DefaultHero() {
+  return (
+    <div className="relative overflow-hidden rounded-xl">
+      <Image
+        src="/brand/cover.png"
+        alt="MatchBox — a row of matches with one lit"
+        width={3280}
+        height={1248}
+        className="h-auto w-full"
+        preload
+      />
+      <Link
+        href="/products"
+        className="absolute bottom-[12%] left-1/2 -translate-x-1/2 rounded-md bg-brand-flame px-5 py-2 text-sm font-bold text-brand-charcoal shadow hover:bg-brand-flame-light sm:px-8 sm:py-3 sm:text-base"
+      >
+        Shop now
+      </Link>
+    </div>
   );
 }
 

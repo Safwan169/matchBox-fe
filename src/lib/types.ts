@@ -93,6 +93,17 @@ export interface OrderQuote {
   total: number;
 }
 
+/** Public hero banner (GET /promotions). */
+export interface Promotion {
+  id: string;
+  title: string;
+  subtitle: string;
+  image: string;
+  buttonText: string;
+  link: string;
+  showText: boolean;
+}
+
 export interface StoreSettings {
   phone: string; // "01XXXXXXXXX" or ""
   whatsapp: string; // "01XXXXXXXXX" or ""

@@ -6,16 +6,17 @@ interface Props {
   alt: string;
   className?: string;
   sizes?: string;
-  priority?: boolean;
+  /** Load immediately with high priority (for the main, above-the-fold image). */
+  eager?: boolean;
 }
 
 // Square product image. Falls back to a branded matchstick illustration.
-export function ProductImage({ src, alt, className = "", sizes = "(min-width: 768px) 25vw, 50vw", priority }: Props) {
+export function ProductImage({ src, alt, className = "", sizes = "(min-width: 768px) 25vw, 50vw", eager }: Props) {
   return (
     <div className={`relative aspect-square overflow-hidden bg-brand-red ${className}`}>
       {src ? (
         // Images are served by our API; skip the optimizer, which blocks local hosts.
-        <Image src={assetUrl(src)} alt={alt} fill sizes={sizes} className="object-cover" unoptimized priority={priority} />
+        <Image src={assetUrl(src)} alt={alt} fill sizes={sizes} className="object-cover" unoptimized loading={eager ? "eager" : "lazy"} fetchPriority={eager ? "high" : "auto"} />
       ) : (
         <svg viewBox="0 0 100 100" role="img" aria-label={alt} className="h-full w-full">
           <rect x="47" y="38" width="6" height="40" rx="2" fill="var(--brand-wood)" />

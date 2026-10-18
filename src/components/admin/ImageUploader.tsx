@@ -6,9 +6,21 @@ import { Alert, Button, errorMessage } from "@/components/ui";
 import { api } from "@/lib/api";
 import type { ApiItem } from "@/lib/types";
 
-const MAX_IMAGES = 10;
+interface Props {
+  images: string[];
+  onChange(images: string[]): void;
+  max?: number;
+  label?: string;
+  help?: string;
+}
 
-export function ImageUploader({ images, onChange }: { images: string[]; onChange(images: string[]): void }) {
+export function ImageUploader({
+  images,
+  onChange,
+  max = 10,
+  label = "Images",
+  help = "The first image is the main photo. JPEG, PNG, WebP or GIF, up to 5 MB each.",
+}: Props) {
   const input = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
@@ -19,7 +31,7 @@ export function ImageUploader({ images, onChange }: { images: string[]; onChange
     setError("");
     const added: string[] = [];
     try {
-      for (const file of Array.from(files).slice(0, MAX_IMAGES - images.length)) {
+      for (const file of Array.from(files).slice(0, max - images.length)) {
         const form = new FormData();
         form.append("image", file);
         const { data } = await api<ApiItem<{ url: string }>>("/admin/uploads", { method: "POST", body: form });
@@ -43,13 +55,13 @@ export function ImageUploader({ images, onChange }: { images: string[]; onChange
 
   return (
     <div>
-      <p className="mb-1 text-sm font-semibold">Images</p>
-      <p className="mb-3 text-xs text-brand-brown">The first image is the main photo. JPEG, PNG, WebP or GIF, up to 5 MB each.</p>
+      <p className="mb-1 text-sm font-semibold">{label}</p>
+      <p className="mb-3 text-xs text-brand-brown">{help}</p>
       <div className="grid grid-cols-3 gap-3 sm:grid-cols-5">
         {images.map((src, i) => (
           <div key={src} className="group relative overflow-hidden rounded-md border border-brand-brown/20">
             <ProductImage src={src} alt={`Image ${i + 1}`} sizes="120px" />
-            {i === 0 && <span className="absolute top-1 left-1 rounded bg-brand-flame px-1.5 text-[10px] font-bold">MAIN</span>}
+            {i === 0 && max > 1 && <span className="absolute top-1 left-1 rounded bg-brand-flame px-1.5 text-[10px] font-bold">MAIN</span>}
             <div className="absolute inset-x-0 bottom-0 flex justify-between bg-brand-charcoal/70 px-1 text-xs text-white">
               <button type="button" disabled={i === 0} onClick={() => move(i, i - 1)} className="px-1 disabled:opacity-30" aria-label="Move left">←</button>
               <button type="button" onClick={() => onChange(images.filter((_, j) => j !== i))} className="px-1 hover:text-brand-flame" aria-label="Remove image">✕</button>
@@ -58,12 +70,12 @@ export function ImageUploader({ images, onChange }: { images: string[]; onChange
           </div>
         ))}
       </div>
-      <input ref={input} type="file" accept="image/jpeg,image/png,image/webp,image/gif" multiple hidden onChange={(e) => upload(e.target.files)} />
+      <input ref={input} type="file" accept="image/jpeg,image/png,image/webp,image/gif" multiple={max > 1} hidden onChange={(e) => upload(e.target.files)} />
       <div className="mt-3 flex items-center gap-3">
-        <Button type="button" variant="outline" disabled={uploading || images.length >= MAX_IMAGES} onClick={() => input.current?.click()}>
-          {uploading ? "Uploading…" : "Upload images"}
+        <Button type="button" variant="outline" disabled={uploading || images.length >= max} onClick={() => input.current?.click()}>
+          {uploading ? "Uploading…" : max > 1 ? "Upload images" : "Upload image"}
         </Button>
-        <span className="text-xs text-brand-brown">{images.length}/{MAX_IMAGES}</span>
+        <span className="text-xs text-brand-brown">{images.length}/{max}</span>
       </div>
       {error && <div className="mt-2"><Alert>{error}</Alert></div>}
     </div>
