@@ -13,7 +13,7 @@ export function ProductCard({ product }: { product: Product }) {
       className="group flex flex-col overflow-hidden rounded-lg border border-brand-brown/15 bg-white/60 transition hover:-translate-y-0.5 hover:shadow-lg"
     >
       <div className="relative">
-        <ProductImage src={product.images[0]} alt={product.name} />
+        <ProductImage src={product.images[0]} alt={product.name} hoverZoom />
         {onSale && (
           <span className="absolute top-2 left-2 rounded bg-brand-flame px-2 py-0.5 text-xs font-bold text-brand-charcoal">
             SALE
