@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { AddToCart } from "@/components/product/AddToCart";
 import { Price } from "@/components/product/Price";
+import { ProductGrid, ProductGridSkeleton } from "@/components/product/ProductCard";
 import { ProductGallery } from "@/components/product/ProductGallery";
 import { ApiError, apiGet } from "@/lib/api";
 import { WhatsAppIcon } from "@/components/icons";
@@ -32,6 +33,26 @@ export default function ProductPage({ params }: PageProps<"/products/[slug]">) {
       <Suspense fallback={<ProductSkeleton />}>
         <ProductDetail params={params} />
       </Suspense>
+      <Suspense fallback={<div className="mt-16"><ProductGridSkeleton count={4} /></div>}>
+        <RelatedProducts params={params} />
+      </Suspense>
+    </section>
+  );
+}
+
+async function RelatedProducts({ params }: Pick<PageProps<"/products/[slug]">, "params">) {
+  const { slug } = await params;
+  const related = await apiGet<ApiItem<Product[]>>(`/products/${encodeURIComponent(slug)}/related?limit=4`)
+    .then((r) => r.data)
+    .catch(() => [] as Product[]);
+  if (related.length === 0) return null;
+
+  return (
+    <section aria-labelledby="related-heading" className="mt-16 border-t border-brand-brown/15 pt-10">
+      <h2 id="related-heading" className="font-display text-2xl text-brand-red">You may also like</h2>
+      <div className="mt-6">
+        <ProductGrid products={related} />
+      </div>
     </section>
   );
 }
