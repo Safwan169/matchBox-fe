@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useState, type ReactNode } from "react";
-import { assetUrl } from "@/lib/assets";
+import { assetUrl, isUpload } from "@/lib/assets";
 import type { Promotion } from "@/lib/types";
 
 const INTERVAL_MS = 6000;
@@ -61,7 +61,7 @@ export function HeroCarousel({ promotions }: { promotions: Promotion[] }) {
               fill
               sizes="(min-width: 1152px) 1152px, 100vw"
               className="object-cover"
-              unoptimized
+              unoptimized={!isUpload(p.image)}
               loading={i === 0 ? "eager" : "lazy"}
               fetchPriority={i === 0 ? "high" : "auto"}
             />

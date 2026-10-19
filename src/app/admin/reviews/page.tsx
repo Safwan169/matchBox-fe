@@ -67,7 +67,7 @@ export default function AdminReviewsPage() {
             <td className="px-4 py-3"><Stars rating={r.rating} /></td>
             <td className="max-w-sm px-4 py-3"><p className="line-clamp-3">{r.comment}</p></td>
             <td className="px-4 py-3 whitespace-nowrap">{formatDate(r.createdAt)}</td>
-            <td className={`px-4 py-3 text-xs font-semibold capitalize ${r.status === "published" ? "text-green-700" : "text-brand-brown"}`}>{r.status}</td>
+            <td className={`px-4 py-3 text-xs font-semibold capitalize ${r.status === "published" ? "text-green-800" : "text-brand-brown"}`}>{r.status}</td>
             <td className="px-4 py-3 text-right whitespace-nowrap">
               <button onClick={() => setReviewStatus(r, r.status === "published" ? "hidden" : "published")} className="font-semibold text-brand-red hover:underline">
                 {r.status === "published" ? "Hide" : "Publish"}

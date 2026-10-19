@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useRef, useState, type PointerEvent } from "react";
-import { assetUrl } from "@/lib/assets";
+import { assetUrl, isUpload } from "@/lib/assets";
 import { ProductImage } from "./ProductImage";
 
 const ZOOM = 2.5;
@@ -41,7 +41,7 @@ export function ProductGallery({ images, name }: { images: string[]; name: strin
             alt={name}
             fill
             sizes="(min-width: 768px) 50vw, 100vw"
-            unoptimized
+            unoptimized={!isUpload(src)}
             loading="eager"
             fetchPriority="high"
             className="object-cover transition-transform duration-150 ease-out"
@@ -77,7 +77,7 @@ export function ProductGallery({ images, name }: { images: string[]; name: strin
         className="m-auto max-h-none max-w-none bg-transparent p-0 backdrop:bg-brand-charcoal/90"
       >
         <div className="relative h-[90vh] w-[94vw] max-w-5xl">
-          <Image src={assetUrl(src)} alt={name} fill sizes="94vw" unoptimized className="object-contain" />
+          <Image src={assetUrl(src)} alt={name} fill sizes="94vw" unoptimized={!isUpload(src)} className="object-contain" />
           <button
             type="button"
             onClick={() => dialog.current?.close()}

@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui";
 import { apiGet } from "@/lib/api";
 import type { ApiList, Product } from "@/lib/types";
-import { ProductCard } from "./ProductCard";
+import { EAGER_COUNT, ProductCard } from "./ProductCard";
 
 interface Props {
   initial: Product[];
@@ -51,8 +51,8 @@ export function InfiniteProductGrid({ initial, query, page: startPage, totalPage
   return (
     <>
       <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
-        {products.map((p) => (
-          <ProductCard key={p.id} product={p} />
+        {products.map((p, i) => (
+          <ProductCard key={p.id} product={p} eager={i < EAGER_COUNT} />
         ))}
       </div>
 

@@ -2,17 +2,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { Suspense, type ReactNode } from "react";
 import { ProductGrid, ProductGridSkeleton } from "@/components/product/ProductCard";
-import { apiGet } from "@/lib/api";
-import { assetUrl } from "@/lib/assets";
-import type { ApiItem, ApiList, Category, HomeSection, Product, Promotion } from "@/lib/types";
+import { assetUrl, isUpload } from "@/lib/assets";
+import { getCategories, getProductList, getPromotions } from "@/lib/store-data";
+import type { HomeSection } from "@/lib/types";
 import { HeroCarousel } from "./HeroCarousel";
-
-/** Used when the sections can't be loaded, matching the default layout. */
-export const FALLBACK_SECTIONS: HomeSection[] = [
-  { id: "hero", type: "hero", title: "", config: {} },
-  { id: "categories", type: "categories", title: "Shop by category", config: {} },
-  { id: "featured", type: "featured_products", title: "Featured", config: { limit: 8 } },
-];
 
 function SectionShell({ title, action, children, className = "pt-12" }: { title: string; action?: ReactNode; children: ReactNode; className?: string }) {
   return (
@@ -102,16 +95,14 @@ function ProductsSection({ title, query, href, count }: { title: string; query: 
 }
 
 async function ProductsFor({ query }: { query: string }) {
-  const products = await apiGet<ApiList<Product>>(`/products?${query}`)
-    .then((r) => r.data)
-    .catch(() => [] as Product[]);
+  const products = await getProductList(query);
   if (products.length === 0) return <p className="text-brand-brown">No products here yet.</p>;
   return <ProductGrid products={products} />;
 }
 
 function BannerImage({ image, link, alt }: { image: string; link: string; alt: string }) {
   const img = (
-    <Image src={assetUrl(image)} alt={alt} width={1640} height={500} sizes="(min-width: 1152px) 1152px, 100vw" unoptimized className="h-auto w-full rounded-xl" />
+    <Image src={assetUrl(image)} alt={alt} width={1640} height={500} sizes="(min-width: 1152px) 1152px, 100vw" unoptimized={!isUpload(image)} className="h-auto w-full rounded-xl" />
   );
   if (!link) return img;
   return link.startsWith("/") ? (
@@ -122,9 +113,7 @@ function BannerImage({ image, link, alt }: { image: string; link: string; alt: s
 }
 
 async function Hero() {
-  const promotions = await apiGet<ApiItem<Promotion[]>>("/promotions")
-    .then((r) => r.data)
-    .catch(() => [] as Promotion[]);
+  const promotions = await getPromotions();
   return promotions.length > 0 ? <HeroCarousel promotions={promotions} /> : <DefaultHero />;
 }
 
@@ -136,6 +125,7 @@ export function DefaultHero() {
         alt="MatchBox — a row of matches with one lit"
         width={3280}
         height={1248}
+        sizes="(min-width: 1152px) 1120px, 100vw"
         className="h-auto w-full"
         preload
       />
@@ -150,9 +140,7 @@ export function DefaultHero() {
 }
 
 async function CategoryTiles() {
-  const categories = await apiGet<ApiItem<Category[]>>("/categories")
-    .then((r) => r.data)
-    .catch(() => [] as Category[]);
+  const categories = await getCategories();
 
   return (
     <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">

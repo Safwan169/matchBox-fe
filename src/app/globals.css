@@ -31,6 +31,11 @@
   --font-sans: var(--font-body);
 }
 
+/* Returning visitors who confirmed their age (set by the inline <head> script). */
+html[data-age-ok] .age-gate {
+  display: none;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);

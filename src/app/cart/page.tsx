@@ -37,7 +37,7 @@ export default function CartPage() {
         const quantity = Math.min(item.quantity, product.stock);
         if (product.price !== item.price) changes.push(`The price of ${item.name} changed.`);
         if (quantity < item.quantity) changes.push(`Only ${product.stock} of ${item.name} available.`);
-        next.push({ ...item, name: product.name, price: product.price, stock: product.stock, image: product.images[0] ?? null, quantity });
+        next.push({ ...item, productId: product.id, slug: product.slug, name: product.name, price: product.price, stock: product.stock, image: product.images[0] ?? null, quantity });
       }
       replace(next);
       setNotice(changes.join(" "));
@@ -74,16 +74,16 @@ export default function CartPage() {
               <Link href={`/products/${item.slug}`} className="w-20 shrink-0 overflow-hidden rounded-md sm:w-24">
                 <ProductImage src={item.image ?? undefined} alt={item.name} sizes="96px" />
               </Link>
-              <div className="flex flex-1 flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex min-w-0 flex-1 flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <Link href={`/products/${item.slug}`} className="font-semibold hover:text-brand-red">
                     {item.name}
                   </Link>
                   <p className="text-sm text-brand-brown">{formatPrice(item.price)} each</p>
                 </div>
-                <div className="flex items-center gap-4">
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
                   <QuantityInput value={item.quantity} max={item.stock} onChange={(q) => setQuantity(item.productId, q)} />
-                  <p className="w-24 text-right font-bold">{formatPrice(item.price * item.quantity)}</p>
+                  <p className="font-bold sm:w-24 sm:text-right">{formatPrice(item.price * item.quantity)}</p>
                   <button onClick={() => remove(item.productId)} className="text-sm text-brand-red hover:underline" aria-label={`Remove ${item.name}`}>
                     Remove
                   </button>

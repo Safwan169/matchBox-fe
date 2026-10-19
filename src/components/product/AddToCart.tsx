@@ -36,7 +36,7 @@ export function AddToCart({ product }: { product: Product }) {
         </Button>
       </div>
       {added && (
-        <p role="status" className="text-sm text-green-700">
+        <p role="status" className="text-sm text-green-800">
           Added to cart ·{" "}
           <Link href="/cart" className="font-semibold underline">
             View cart

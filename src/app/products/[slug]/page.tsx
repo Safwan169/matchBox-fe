@@ -12,7 +12,8 @@ import { ApiError, apiGet } from "@/lib/api";
 import { WhatsAppIcon } from "@/components/icons";
 import { assetUrl } from "@/lib/assets";
 import { getStoreSettings, whatsappHref } from "@/lib/contact";
-import type { ApiItem, Category, Product } from "@/lib/types";
+import { getCategories } from "@/lib/store-data";
+import type { ApiItem, Product } from "@/lib/types";
 
 // Identical fetches in one request are de-duplicated, so this shares the page's request.
 export async function generateMetadata({ params }: PageProps<"/products/[slug]">): Promise<Metadata> {
@@ -79,9 +80,7 @@ async function ProductDetail({ params }: Pick<PageProps<"/products/[slug]">, "pa
   }
 
   const [categories, settings] = await Promise.all([
-    apiGet<ApiItem<Category[]>>("/categories")
-      .then((r) => r.data)
-      .catch(() => [] as Category[]),
+    getCategories(),
     getStoreSettings(),
   ]);
   const category = categories.find((c) => c.id === product.categoryId);
@@ -105,7 +104,7 @@ async function ProductDetail({ params }: Pick<PageProps<"/products/[slug]">, "pa
         <ProductGallery images={product.images} name={product.name} />
 
         <div>
-          {product.brand && <p className="text-sm tracking-wide text-brand-brown/70 uppercase">{product.brand}</p>}
+          {product.brand && <p className="text-sm tracking-wide text-brand-brown uppercase">{product.brand}</p>}
           <h1 className="mt-1 text-3xl font-bold">{product.name}</h1>
           {product.ratingCount > 0 && (
             <a href="#reviews" className="mt-2 inline-block hover:underline">
@@ -114,7 +113,7 @@ async function ProductDetail({ params }: Pick<PageProps<"/products/[slug]">, "pa
           )}
           <Price price={product.price} compareAtPrice={product.compareAtPrice} className="mt-4 text-2xl" />
 
-          <p className={`mt-3 text-sm font-semibold ${inStock ? "text-green-700" : "text-brand-red"}`}>
+          <p className={`mt-3 text-sm font-semibold ${inStock ? "text-green-800" : "text-brand-red"}`}>
             {inStock ? (product.stock < 10 ? `Only ${product.stock} left` : "In stock") : "Out of stock"}
           </p>
 

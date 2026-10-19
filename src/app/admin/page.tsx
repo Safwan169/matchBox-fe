@@ -88,7 +88,7 @@ function Stat({ label, value, hint, href, highlight }: { label: string; value: s
     <div className={`rounded-lg border-2 p-4 ${highlight ? "border-brand-flame bg-brand-flame-light/40" : "border-brand-brown/15 bg-white/70"}`}>
       <p className="text-xs font-semibold tracking-wide text-brand-brown uppercase">{label}</p>
       <p className="mt-1 text-2xl font-bold">{value}</p>
-      {hint && <p className="text-xs text-brand-brown/70">{hint}</p>}
+      {hint && <p className="text-xs text-brand-brown">{hint}</p>}
     </div>
   );
   return href ? <Link href={href} className="block hover:opacity-90">{body}</Link> : body;

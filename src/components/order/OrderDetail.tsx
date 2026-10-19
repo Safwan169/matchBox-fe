@@ -19,7 +19,7 @@ function StatusTimeline({ status }: { status: OrderStatus }) {
       {steps.map((s, i) => (
         <li key={s}>
           <div className={`h-2 rounded-full ${i <= current ? "bg-brand-red" : "bg-brand-brown/15"}`} />
-          <p className={`mt-2 ${i <= current ? "text-brand-red" : "text-brand-brown/60"}`}>{s}</p>
+          <p className={`mt-2 ${i <= current ? "text-brand-red" : "text-brand-brown"}`}>{s}</p>
         </li>
       ))}
     </ol>

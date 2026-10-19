@@ -1,7 +1,6 @@
 import { Suspense } from "react";
-import { DefaultHero, FALLBACK_SECTIONS, HomeSectionView } from "@/components/home/sections";
-import { apiGet } from "@/lib/api";
-import type { ApiItem, HomeSection } from "@/lib/types";
+import { DefaultHero, HomeSectionView } from "@/components/home/sections";
+import { getHomeSections } from "@/lib/store-data";
 
 // The home page is built from sections the admin arranges (Admin → Home page).
 export default function Home() {
@@ -21,9 +20,7 @@ export default function Home() {
 }
 
 async function HomeSections() {
-  const sections = await apiGet<ApiItem<HomeSection[]>>("/home-sections")
-    .then((r) => r.data)
-    .catch(() => FALLBACK_SECTIONS);
+  const sections = await getHomeSections();
 
   return sections.map((section) => <HomeSectionView key={section.id} section={section} />);
 }

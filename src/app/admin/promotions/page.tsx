@@ -8,7 +8,7 @@ import { ImageUploader } from "@/components/admin/ImageUploader";
 import { Alert, Button, Card, Field, PageTitle, errorMessage } from "@/components/ui";
 import type { AdminPromotion } from "@/lib/admin-types";
 import { api } from "@/lib/api";
-import { assetUrl } from "@/lib/assets";
+import { assetUrl, isUpload } from "@/lib/assets";
 import { formatDate } from "@/lib/format";
 import type { ApiItem } from "@/lib/types";
 
@@ -16,7 +16,7 @@ function scheduleStatus(p: AdminPromotion, now: number) {
   if (!p.isActive) return { label: "Hidden", className: "text-brand-brown" };
   if (p.startsAt && new Date(p.startsAt).getTime() > now) return { label: `Starts ${formatDate(p.startsAt)}`, className: "text-blue-700" };
   if (p.endsAt && new Date(p.endsAt).getTime() <= now) return { label: "Ended", className: "text-brand-brown" };
-  return { label: p.endsAt ? `Live until ${formatDate(p.endsAt)}` : "Live", className: "text-green-700" };
+  return { label: p.endsAt ? `Live until ${formatDate(p.endsAt)}` : "Live", className: "text-green-800" };
 }
 
 export default function AdminPromotionsPage() {
@@ -52,7 +52,7 @@ export default function AdminPromotionsPage() {
               <tr key={p.id} className={editing?.id === p.id ? "bg-brand-flame-light/40" : "hover:bg-brand-brown/5"}>
                 <td className="px-4 py-2">
                   <div className="relative aspect-[1640/624] w-32 overflow-hidden rounded bg-brand-red">
-                    <Image src={assetUrl(p.image)} alt="" fill sizes="128px" className="object-cover" unoptimized />
+                    <Image src={assetUrl(p.image)} alt="" fill sizes="128px" className="object-cover" unoptimized={!isUpload(p.image)} />
                   </div>
                 </td>
                 <td className="px-4 py-3">
@@ -143,7 +143,7 @@ function PromotionForm({ promotion, onDone }: { promotion: AdminPromotion | null
         />
         {images[0] && (
           <div className="relative aspect-[1640/624] overflow-hidden rounded-md bg-brand-red">
-            <Image src={assetUrl(images[0])} alt="Banner preview" fill sizes="400px" className="object-cover" unoptimized />
+            <Image src={assetUrl(images[0])} alt="Banner preview" fill sizes="400px" className="object-cover" unoptimized={!isUpload(images[0])} />
           </div>
         )}
         <Field label="Title" name="title" defaultValue={promotion?.title} required minLength={2} maxLength={100} hint="Also used as the image description." />

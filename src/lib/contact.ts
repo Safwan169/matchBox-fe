@@ -1,16 +1,5 @@
-import { apiGet } from "./api";
-import type { ApiItem, StoreSettings } from "./types";
-
-const EMPTY: StoreSettings = { phone: "", whatsapp: "", email: "", address: "", facebookUrl: "" };
-
-/** Store contact settings for server components. Never throws: returns empty values on failure. */
-export async function getStoreSettings(): Promise<StoreSettings> {
-  try {
-    return (await apiGet<ApiItem<StoreSettings>>("/settings")).data;
-  } catch {
-    return EMPTY;
-  }
-}
+// Store contact settings (cached) for server components. Never throws.
+export { getStoreSettings } from "./store-data";
 
 // Numbers are stored as "01XXXXXXXXX" (Bangladesh).
 const international = (local: string) => `880${local.replace(/^0/, "")}`;

@@ -38,7 +38,7 @@ export default function AdminCategoriesPage() {
               <td className="px-4 py-3">{c.sortOrder}</td>
               <td className="px-4 py-3">{c.productCount}</td>
               <td className="px-4 py-3 text-xs font-semibold">
-                {c.isActive ? <span className="text-green-700">Visible</span> : <span className="text-brand-brown">Hidden</span>}
+                {c.isActive ? <span className="text-green-800">Visible</span> : <span className="text-brand-brown">Hidden</span>}
               </td>
               <td className="px-4 py-3 text-right whitespace-nowrap">
                 <button onClick={() => setEditing(c)} className="font-semibold text-brand-red hover:underline">Edit</button>

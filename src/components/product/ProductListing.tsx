@@ -44,6 +44,7 @@ export async function ProductListing({ searchParams, basePath, category }: Props
         <SortSelect />
       </div>
 
+      <h2 className="sr-only">Products</h2>
       {products.length > 0 ? (
         // key: start a fresh list when the search, sort or category changes
         <InfiniteProductGrid key={`${query}|${meta.page}`} initial={products} query={query.toString()} page={meta.page} totalPages={meta.totalPages} />

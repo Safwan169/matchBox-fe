@@ -29,7 +29,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    api<ApiItem<User>>("/auth/me")
+    // /auth/session returns 200 with null when signed out (no console error for visitors).
+    api<ApiItem<User | null>>("/auth/session")
       .then((r) => setUser(r.data))
       .catch(() => setUser(null))
       .finally(() => setLoading(false));

@@ -70,7 +70,7 @@ export default function AdminProductsPage() {
             <td className="px-4 py-3 whitespace-nowrap">{formatPrice(p.price)}</td>
             <td className={`px-4 py-3 font-semibold ${p.stock <= 5 ? "text-red-700" : ""}`}>{p.stock}</td>
             <td className="px-4 py-3 text-xs font-semibold">
-              {p.isActive ? <span className="text-green-700">Visible</span> : <span className="text-brand-brown">Hidden</span>}
+              {p.isActive ? <span className="text-green-800">Visible</span> : <span className="text-brand-brown">Hidden</span>}
               {p.isFeatured && <span className="ml-2 text-brand-red">★ Featured</span>}
             </td>
           </tr>
