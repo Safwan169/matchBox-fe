@@ -3,6 +3,8 @@ import type { NextConfig } from "next";
 // Uploaded product/banner images are served by the API at <api origin>/uploads/…
 const apiUrl = new URL(process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000/api");
 const apiIsLocal = ["localhost", "127.0.0.1", "[::1]"].includes(apiUrl.hostname);
+// Uploads stored on Cloudinary (backend CLOUDINARY_URL) are served from res.cloudinary.com.
+const cloudinaryCloud = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
 
 const nextConfig: NextConfig = {
   cacheComponents: true,
@@ -19,6 +21,10 @@ const nextConfig: NextConfig = {
         port: apiUrl.port,
         pathname: "/uploads/**",
       },
+      // Only our own Cloudinary account, so the optimizer can't be used for anyone else's images.
+      ...(cloudinaryCloud
+        ? [{ protocol: "https" as const, hostname: "res.cloudinary.com", pathname: `/${cloudinaryCloud}/image/upload/**` }]
+        : []),
     ],
     // Only for local development, where the API runs on localhost. Limited to the single
     // pattern above (our own uploads), so it can't be used to reach other local services.
