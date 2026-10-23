@@ -21,7 +21,12 @@ export default function AccountPage() {
     <section className="mx-auto w-full max-w-3xl px-4 py-10">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <PageTitle>My account</PageTitle>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
+          {user.role === "admin" && (
+            <Link href="/admin" className={buttonClass("primary")}>
+              Admin dashboard
+            </Link>
+          )}
           <Link href="/orders" className={buttonClass("outline")}>
             My orders
           </Link>

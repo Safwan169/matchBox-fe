@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Ultra, Work_Sans } from "next/font/google";
 import { AGE_GATE_SCRIPT, AgeGate } from "@/components/AgeGate";
 import { AuthProvider } from "@/context/AuthContext";
@@ -22,6 +22,9 @@ export const metadata: Metadata = {
   description: "Cigarettes, lighters and smoking accessories.",
   icons: { icon: "/brand/logo.png" },
 };
+
+// "cover" lets the mobile bottom bar pad itself above the iPhone home indicator.
+export const viewport: Viewport = { viewportFit: "cover", themeColor: "#A8322B" };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (

@@ -139,7 +139,7 @@ export function DefaultHero() {
   );
 }
 
-async function CategoryTiles() {
+export async function CategoryTiles() {
   const categories = await getCategories();
 
   return (

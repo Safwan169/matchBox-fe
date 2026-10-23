@@ -15,3 +15,49 @@ export function PhoneIcon({ className = "h-4 w-4" }: { className?: string }) {
     </svg>
   );
 }
+
+function OutlineIcon({ className = "h-6 w-6", children }: { className?: string; children: React.ReactNode }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden className={className}>
+      {children}
+    </svg>
+  );
+}
+
+export function HomeIcon({ className }: { className?: string }) {
+  return (
+    <OutlineIcon className={className}>
+      <path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z" />
+    </OutlineIcon>
+  );
+}
+
+export function GridIcon({ className }: { className?: string }) {
+  return (
+    <OutlineIcon className={className}>
+      <rect x="3" y="3" width="7" height="7" rx="1" />
+      <rect x="14" y="3" width="7" height="7" rx="1" />
+      <rect x="3" y="14" width="7" height="7" rx="1" />
+      <rect x="14" y="14" width="7" height="7" rx="1" />
+    </OutlineIcon>
+  );
+}
+
+export function CartIcon({ className }: { className?: string }) {
+  return (
+    <OutlineIcon className={className}>
+      <circle cx="9" cy="20" r="1.5" />
+      <circle cx="18" cy="20" r="1.5" />
+      <path d="M2 3h3l2.7 12.4a1 1 0 0 0 1 .8h9.6a1 1 0 0 0 1-.8L21 7H6" />
+    </OutlineIcon>
+  );
+}
+
+export function UserIcon({ className }: { className?: string }) {
+  return (
+    <OutlineIcon className={className}>
+      <circle cx="12" cy="8" r="4" />
+      <path d="M4 21a8 8 0 0 1 16 0" />
+    </OutlineIcon>
+  );
+}
