@@ -1,11 +1,6 @@
 import type { Metadata } from "next";
 import { Ultra, Work_Sans } from "next/font/google";
-import { Suspense } from "react";
 import { AGE_GATE_SCRIPT, AgeGate } from "@/components/AgeGate";
-import { Footer } from "@/components/layout/Footer";
-import { ContactStrip } from "@/components/layout/ContactStrip";
-import { Header } from "@/components/layout/Header";
-import { WhatsAppButton } from "@/components/layout/WhatsAppButton";
 import { AuthProvider } from "@/context/AuthContext";
 import { CartProvider } from "@/context/CartContext";
 import "./globals.css";
@@ -37,17 +32,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       </head>
       <body className="flex min-h-full flex-col">
         <AuthProvider>
-          <CartProvider>
-            <Suspense fallback={null}>
-              <ContactStrip />
-            </Suspense>
-            <Header />
-            <main className="flex min-h-screen flex-1 flex-col">{children}</main>
-            <Footer />
-            <Suspense fallback={null}>
-              <WhatsAppButton />
-            </Suspense>
-          </CartProvider>
+          {/* The shop's header and footer live in (store)/layout; admin has its own. */}
+          <CartProvider>{children}</CartProvider>
         </AuthProvider>
         <AgeGate />
       </body>

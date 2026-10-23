@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { useAdminApi } from "@/components/admin/AdminShell";
 import { ImageUploader } from "@/components/admin/ImageUploader";
 import { Alert, Button, Card, Field, PageTitle, Select, TextArea, buttonClass, errorMessage } from "@/components/ui";
@@ -75,6 +75,12 @@ export default function AdminHomePage() {
     return parts.join(" · ");
   }
 
+  const closeForm = (saved: boolean) => () => {
+    setEditing(null);
+    setAdding("");
+    if (saved) reload();
+  };
+
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -84,13 +90,32 @@ export default function AdminHomePage() {
       <p className="text-sm text-brand-brown">Add, reorder, hide or remove the sections shown on the home page. Changes are live immediately.</p>
       <Alert>{error || actionError}</Alert>
 
-      <div className="grid gap-6 2xl:grid-cols-[1fr_420px]">
-        <ol className="space-y-2">
-          {sections.map((s, i) => (
-            <li
-              key={s.id}
-              className={`flex flex-wrap items-center gap-3 rounded-lg border p-3 ${editing?.id === s.id ? "border-brand-flame bg-brand-flame-light/40" : "border-brand-brown/15 bg-white/70"} ${s.isActive ? "" : "opacity-60"}`}
-            >
+      <Card>
+        <Select
+          label="Add a section"
+          name="newType"
+          value={adding}
+          onChange={(e) => {
+            setEditing(null);
+            setAdding(e.target.value as HomeSectionType | "");
+          }}
+        >
+          <option value="">Choose a section type…</option>
+          {TYPES.map((t) => <option key={t.type} value={t.type}>{t.label}</option>)}
+        </Select>
+        {adding && <p className="mt-2 text-xs text-brand-brown">{typeInfo(adding).help}</p>}
+      </Card>
+      {adding && (
+        <SectionForm key={adding} type={adding} section={null} categories={cats?.data ?? []} onDone={closeForm(true)} onCancel={closeForm(false)} />
+      )}
+
+      <ol className="space-y-2">
+        {sections.map((s, i) => (
+          <li
+            key={s.id}
+            className={`rounded-lg border p-3 ${editing?.id === s.id ? "border-brand-flame bg-brand-flame-light/40" : "border-brand-brown/15 bg-white/70"}`}
+          >
+            <div className={`flex flex-wrap items-center gap-3 ${s.isActive ? "" : "opacity-60"}`}>
               <div className="flex flex-col">
                 <button onClick={() => move(i, -1)} disabled={i === 0} aria-label="Move up" className="px-2 leading-none font-bold hover:text-brand-red disabled:opacity-25">▲</button>
                 <button onClick={() => move(i, 1)} disabled={i === sections.length - 1} aria-label="Move down" className="px-2 leading-none font-bold hover:text-brand-red disabled:opacity-25">▼</button>
@@ -105,42 +130,28 @@ export default function AdminHomePage() {
               </div>
               <div className="flex gap-3 text-sm whitespace-nowrap">
                 <button onClick={() => toggle(s)} className="text-brand-brown hover:text-brand-red">{s.isActive ? "Hide" : "Show"}</button>
-                <button onClick={() => { setAdding(""); setEditing(s); }} className="font-semibold text-brand-red hover:underline">Edit</button>
+                <button
+                  onClick={() => {
+                    setAdding("");
+                    setEditing(editing?.id === s.id ? null : s);
+                  }}
+                  aria-expanded={editing?.id === s.id}
+                  className="font-semibold text-brand-red hover:underline"
+                >
+                  {editing?.id === s.id ? "Close" : "Edit"}
+                </button>
                 <button onClick={() => remove(s)} className="text-brand-brown hover:text-red-700">Remove</button>
               </div>
-            </li>
-          ))}
-        </ol>
-
-        <div className="space-y-4">
-          {!editing && (
-            <Card>
-              <Select label="Add a section" name="newType" value={adding} onChange={(e) => setAdding(e.target.value as HomeSectionType | "")}>
-                <option value="">Choose a section type…</option>
-                {TYPES.map((t) => <option key={t.type} value={t.type}>{t.label}</option>)}
-              </Select>
-              {adding && <p className="mt-2 text-xs text-brand-brown">{typeInfo(adding).help}</p>}
-            </Card>
-          )}
-          {(editing || adding) && (
-            <SectionForm
-              key={editing?.id ?? adding}
-              type={editing?.type ?? (adding as HomeSectionType)}
-              section={editing}
-              categories={cats?.data ?? []}
-              onDone={() => {
-                setEditing(null);
-                setAdding("");
-                reload();
-              }}
-              onCancel={() => {
-                setEditing(null);
-                setAdding("");
-              }}
-            />
-          )}
-        </div>
-      </div>
+            </div>
+            {/* The form opens right under the section being edited. */}
+            {editing?.id === s.id && (
+              <div className="mt-3">
+                <SectionForm key={s.id} type={s.type} section={s} categories={cats?.data ?? []} onDone={closeForm(true)} onCancel={closeForm(false)} />
+              </div>
+            )}
+          </li>
+        ))}
+      </ol>
     </div>
   );
 }
@@ -159,6 +170,11 @@ function SectionForm({
   onCancel(): void;
 }) {
   const [images, setImages] = useState<string[]>(section?.config.image ? [section.config.image] : []);
+  const ref = useRef<HTMLDivElement>(null);
+  // Bring the form into view when it opens (long lists, small screens).
+  useEffect(() => {
+    ref.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }, []);
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
   const c = section?.config ?? {};
@@ -197,39 +213,46 @@ function SectionForm({
   }
 
   return (
-    <Card>
-      <h2 className="font-semibold">{section ? "Edit section" : "New section"}: {typeInfo(type).label}</h2>
-      <form onSubmit={onSubmit} className="mt-4 space-y-4">
-        <Alert>{error}</Alert>
-        {type !== "hero" && (
-          <Field label="Heading" name="title" defaultValue={section?.title ?? defaultTitles[type] ?? ""} maxLength={80} hint="Leave empty for no heading." />
-        )}
-        {type === "category_products" && (
-          <Select label="Category" name="categoryId" defaultValue={c.categoryId ?? ""} required>
-            <option value="">Choose…</option>
-            {categories.map((cat) => (
-              <option key={cat.id} value={cat.id}>{cat.name}{!cat.isActive ? " (hidden)" : ""}</option>
-            ))}
-          </Select>
-        )}
-        {hasLimit(type) && <Field label="Number of products" name="limit" type="number" min="1" max="24" defaultValue={c.limit ?? 8} />}
-        {type === "banner" && (
-          <>
-            <ImageUploader images={images} onChange={setImages} max={1} label="Banner image" help="Wide image, e.g. 1640×500. Remove (✕) to replace." />
-            <Field label="Link (optional)" name="link" defaultValue={c.link ?? ""} placeholder="/categories/lighters" />
-          </>
-        )}
-        {type === "text" && <TextArea label="Text" name="body" rows={4} required maxLength={2000} defaultValue={c.body ?? ""} />}
-        {type === "hero" && <p className="text-sm text-brand-brown">Manage the banners in Admin → Promotions.</p>}
-        <label className="flex items-center gap-3 text-sm">
-          <input type="checkbox" name="isActive" defaultChecked={section?.isActive ?? true} className="h-4 w-4 accent-brand-red" />
-          Visible on the home page
-        </label>
-        <div className="flex gap-2">
-          <Button type="submit" disabled={saving}>{saving ? "Saving…" : section ? "Save" : "Add to home page"}</Button>
-          <Button type="button" variant="ghost" onClick={onCancel}>Cancel</Button>
-        </div>
-      </form>
-    </Card>
+    <div ref={ref} className="scroll-mt-24">
+      <Card>
+        <h2 className="font-semibold">{section ? "Edit section" : "New section"}: {typeInfo(type).label}</h2>
+        <form onSubmit={onSubmit} className="mt-4 space-y-4">
+          <Alert>{error}</Alert>
+          {type !== "hero" && (
+            <Field label="Heading" name="title" defaultValue={section?.title ?? defaultTitles[type] ?? ""} maxLength={80} hint="Leave empty for no heading." />
+          )}
+          {type === "category_products" && (
+            <Select label="Category" name="categoryId" defaultValue={c.categoryId ?? ""} required>
+              <option value="">Choose…</option>
+              {categories.map((cat) => (
+                <option key={cat.id} value={cat.id}>{cat.name}{!cat.isActive ? " (hidden)" : ""}</option>
+              ))}
+            </Select>
+          )}
+          {hasLimit(type) && <Field label="Number of products" name="limit" type="number" min="1" max="24" defaultValue={c.limit ?? 8} />}
+          {type === "banner" && (
+            <>
+              <ImageUploader images={images} onChange={setImages} max={1} label="Banner image" help="Wide image, e.g. 1640×500. Remove (✕) to replace." />
+              <Field label="Link (optional)" name="link" defaultValue={c.link ?? ""} placeholder="/categories/lighters" />
+            </>
+          )}
+          {type === "text" && <TextArea label="Text" name="body" rows={4} required maxLength={2000} defaultValue={c.body ?? ""} />}
+          {type === "hero" && (
+            <p className="text-sm text-brand-brown">
+              The banners themselves are managed in{" "}
+              <Link href="/admin/promotions" className="font-semibold text-brand-red hover:underline">Promotions</Link>.
+            </p>
+          )}
+          <label className="flex items-center gap-3 text-sm">
+            <input type="checkbox" name="isActive" defaultChecked={section?.isActive ?? true} className="h-4 w-4 accent-brand-red" />
+            Visible on the home page
+          </label>
+          <div className="flex gap-2">
+            <Button type="submit" disabled={saving}>{saving ? "Saving…" : section ? "Save" : "Add to home page"}</Button>
+            <Button type="button" variant="ghost" onClick={onCancel}>Cancel</Button>
+          </div>
+        </form>
+      </Card>
+    </div>
   );
 }

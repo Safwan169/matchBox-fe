@@ -16,7 +16,7 @@ const links = [
   { href: "/admin/home", label: "Home page" },
   { href: "/admin/promotions", label: "Promotions" },
   { href: "/admin/settings", label: "Settings" },
-  { href: "/account#password", label: "My account" },
+  { href: "/admin/account", label: "My account" },
 ];
 
 const AdminReadyContext = createContext(false);

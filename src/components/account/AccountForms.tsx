@@ -1,49 +1,12 @@
 "use client";
 
-import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
-import { Alert, Button, Card, Field, PageTitle, buttonClass, errorMessage } from "@/components/ui";
-import { useRequireAuth } from "@/context/AuthContext";
+import { Alert, Button, Card, Field, errorMessage } from "@/components/ui";
 import { api } from "@/lib/api";
 import { BD_PHONE_HINT, BD_PHONE_PATTERN } from "@/lib/phone";
 import type { ApiItem, User } from "@/lib/types";
 
-export default function AccountPage() {
-  const { user, allowed, logout, setUser } = useRequireAuth();
-  const router = useRouter();
-
-  if (!allowed || !user) return <p className="mx-auto w-full max-w-3xl px-4 py-12 text-brand-brown">Loading…</p>;
-
-  async function onLogout() {
-    await logout();
-    router.replace("/");
-  }
-
-  return (
-    <section className="mx-auto w-full max-w-3xl px-4 py-10">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <PageTitle>My account</PageTitle>
-        <div className="flex gap-2">
-          <Link href="/orders" className={buttonClass("outline")}>
-            My orders
-          </Link>
-          <Button variant="ghost" onClick={onLogout}>
-            Log out
-          </Button>
-        </div>
-      </div>
-
-      <div className="mt-8 grid gap-6 md:grid-cols-2">
-        <ProfileForm user={user} onSaved={setUser} />
-        <AddressForm user={user} onSaved={setUser} />
-        <PasswordForm />
-      </div>
-    </section>
-  );
-}
-
-function ProfileForm({ user, onSaved }: { user: User; onSaved(user: User): void }) {
+export function ProfileForm({ user, onSaved }: { user: User; onSaved(user: User): void }) {
   const [status, setStatus] = useState<{ kind: "error" | "success"; text: string } | null>(null);
   const [saving, setSaving] = useState(false);
 
@@ -81,7 +44,7 @@ function ProfileForm({ user, onSaved }: { user: User; onSaved(user: User): void 
   );
 }
 
-function AddressForm({ user, onSaved }: { user: User; onSaved(user: User): void }) {
+export function AddressForm({ user, onSaved }: { user: User; onSaved(user: User): void }) {
   const [status, setStatus] = useState<{ kind: "error" | "success"; text: string } | null>(null);
   const [saving, setSaving] = useState(false);
   const a = user.address;
@@ -130,7 +93,7 @@ function AddressForm({ user, onSaved }: { user: User; onSaved(user: User): void 
   );
 }
 
-function PasswordForm() {
+export function PasswordForm() {
   const [status, setStatus] = useState<{ kind: "error" | "success"; text: string } | null>(null);
   const [saving, setSaving] = useState(false);
 
@@ -159,7 +122,7 @@ function PasswordForm() {
 
   return (
     <Card>
-      <h2 id="password" className="scroll-mt-32 text-lg font-semibold">Change password</h2>
+      <h2 className="text-lg font-semibold">Change password</h2>
       <form onSubmit={onSubmit} className="mt-4 space-y-4">
         {status && <Alert kind={status.kind}>{status.text}</Alert>}
         <Field label="Current password" name="currentPassword" type="password" autoComplete="current-password" required />
