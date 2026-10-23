@@ -159,7 +159,7 @@ function PasswordForm() {
 
   return (
     <Card>
-      <h2 className="text-lg font-semibold">Change password</h2>
+      <h2 id="password" className="scroll-mt-32 text-lg font-semibold">Change password</h2>
       <form onSubmit={onSubmit} className="mt-4 space-y-4">
         {status && <Alert kind={status.kind}>{status.text}</Alert>}
         <Field label="Current password" name="currentPassword" type="password" autoComplete="current-password" required />
