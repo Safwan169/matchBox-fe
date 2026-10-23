@@ -61,3 +61,62 @@ export function UserIcon({ className }: { className?: string }) {
     </OutlineIcon>
   );
 }
+
+export function ArrowLeftIcon({ className }: { className?: string }) {
+  return (
+    <OutlineIcon className={className}>
+      <path d="M19 12H5M12 19l-7-7 7-7" />
+    </OutlineIcon>
+  );
+}
+
+export function ChevronRightIcon({ className }: { className?: string }) {
+  return (
+    <OutlineIcon className={className}>
+      <path d="m9 18 6-6-6-6" />
+    </OutlineIcon>
+  );
+}
+
+export function BoxIcon({ className }: { className?: string }) {
+  return (
+    <OutlineIcon className={className}>
+      <path d="M21 8 12 3 3 8v8l9 5 9-5z" />
+      <path d="m3 8 9 5 9-5M12 13v8" />
+    </OutlineIcon>
+  );
+}
+
+export function MapPinIcon({ className }: { className?: string }) {
+  return (
+    <OutlineIcon className={className}>
+      <path d="M12 21s-7-6.1-7-11.5a7 7 0 0 1 14 0C19 14.9 12 21 12 21z" />
+      <circle cx="12" cy="9.5" r="2.5" />
+    </OutlineIcon>
+  );
+}
+
+export function LockIcon({ className }: { className?: string }) {
+  return (
+    <OutlineIcon className={className}>
+      <rect x="4" y="11" width="16" height="10" rx="2" />
+      <path d="M8 11V7a4 4 0 0 1 8 0v4" />
+    </OutlineIcon>
+  );
+}
+
+export function DashboardIcon({ className }: { className?: string }) {
+  return (
+    <OutlineIcon className={className}>
+      <path d="M3 13h8V3H3zM13 21h8V11h-8zM13 3v6h8V3zM3 21h8v-6H3z" />
+    </OutlineIcon>
+  );
+}
+
+export function LogoutIcon({ className }: { className?: string }) {
+  return (
+    <OutlineIcon className={className}>
+      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" />
+    </OutlineIcon>
+  );
+}

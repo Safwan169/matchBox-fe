@@ -5,9 +5,9 @@ import { CategoryNav } from "./CategoryNav";
 import { Logo } from "./Logo";
 import { SearchBar } from "./SearchBar";
 
-export function Header() {
+export function Header({ className = "" }: { className?: string }) {
   return (
-    <header className="sticky top-0 z-30 bg-brand-red text-brand-cream shadow-md">
+    <header className={`sticky top-0 z-30 bg-brand-red text-brand-cream shadow-md ${className}`}>
       <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-3 gap-y-3 px-4 py-3 sm:gap-x-6">
         <Logo />
         <SearchBar className="order-last w-full md:order-0 md:w-auto md:flex-1 md:max-w-md" />
