@@ -1,0 +1,9 @@
+Sample photography for the luxury design preview, from Unsplash (Unsplash License).
+https://unsplash.com/photos/<id>:
+hero-flame     photo-1739109441204-7677004c5a27
+cigar-glass    photo-1778548646491-8afb9849e1df
+lighter-open   photo-1708787698692-5b47c487b49e
+lighter-brass  photo-1700303043512-f7add38e0d0a
+smoke          photo-1696255400336-05e8eb84f01a
+lighter-wood   photo-1586173806883-cd00208f7ab1
+Replace with MatchBox's own product photography before launch.
