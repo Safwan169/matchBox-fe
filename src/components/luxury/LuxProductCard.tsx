@@ -29,7 +29,7 @@ export function LuxProductCard({ product, category, sample, preferSample = false
   return (
     <article className="group">
       <div className="relative aspect-[4/5] overflow-hidden bg-lux-linen">
-        <Link href={`/products/${product.slug}`} aria-label={product.name}>
+        <Link href={`/products/${product.slug}`} aria-label={product.name} className="lux-card-media absolute inset-0">
           <Image
             src={src ? assetUrl(src) : sample}
             alt=""

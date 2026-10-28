@@ -59,7 +59,7 @@ function Hero() {
       <div className="absolute inset-0 bg-gradient-to-r from-lux-ink/70 to-transparent" />
 
       <div className="relative mx-auto w-full max-w-7xl px-6 pb-24 sm:px-8 sm:pb-28">
-        <p className={`${eyebrow} lux-fade text-lux-brass-light`} style={{ animationDelay: "300ms" }}>
+        <p className={`${eyebrow} lux-up text-lux-brass-light`} style={{ animationDelay: "300ms" }}>
           MatchBox &nbsp;·&nbsp; Dhaka
         </p>
         <h1 className="mt-6 font-serif text-[clamp(3.2rem,9vw,7.5rem)] leading-[0.95] font-light">
@@ -76,10 +76,10 @@ function Hero() {
             </span>
           </span>
         </h1>
-        <p className="lux-fade mt-8 max-w-md text-base leading-relaxed font-light text-lux-ivory/80" style={{ animationDelay: "1100ms" }}>
+        <p className="lux-up mt-8 max-w-md text-base leading-relaxed font-light text-lux-ivory/80" style={{ animationDelay: "1100ms" }}>
           Lighters, tobacco and smoking accessories, chosen for their craft and delivered with discretion.
         </p>
-        <div className="lux-fade mt-10 flex flex-wrap items-center gap-6" style={{ animationDelay: "1300ms" }}>
+        <div className="lux-up mt-10 flex flex-wrap items-center gap-6" style={{ animationDelay: "1300ms" }}>
           <Link href="/products" className={`${outlineButton} border-lux-ivory/60 hover:border-lux-ivory hover:bg-lux-ivory hover:text-lux-ink`}>
             Explore the collection
             <ArrowLine className="h-4 w-4 transition-transform duration-500 group-hover:translate-x-1" />
@@ -100,14 +100,18 @@ function Hero() {
 function Intro() {
   return (
     <section className="px-6 py-28 text-center sm:py-36">
-      <Reveal className="mx-auto max-w-3xl">
-        <FlameMark className="mx-auto h-6 w-6 text-lux-brass" />
-        <p className="mt-8 font-serif text-[clamp(1.6rem,3.6vw,2.6rem)] leading-snug font-light">
+      <div className="mx-auto max-w-3xl">
+        <Reveal>
+          <FlameMark className="mx-auto h-6 w-6 text-lux-brass" />
+        </Reveal>
+        <Reveal variant="text" as="p" stagger={28} className="mt-8 font-serif text-[clamp(1.6rem,3.6vw,2.6rem)] leading-snug font-light">
           A considered selection for those who appreciate the <em className="text-lux-oxblood">ritual</em> — from the weight of a fine lighter to the
           last detail of the case it rests in.
-        </p>
-        <span className="mx-auto mt-10 block h-px w-16 bg-lux-brass" />
-      </Reveal>
+        </Reveal>
+        <Reveal delay={600}>
+          <span className="mx-auto mt-10 block h-px w-16 bg-lux-brass" />
+        </Reveal>
+      </div>
     </section>
   );
 }
@@ -118,27 +122,35 @@ async function Collections() {
 
   return (
     <section className="mx-auto max-w-7xl px-6 pb-28 sm:px-8 sm:pb-36">
-      <Reveal className="flex flex-wrap items-end justify-between gap-6">
+      <div className="flex flex-wrap items-end justify-between gap-6">
         <div>
-          <p className={`${eyebrow} text-lux-stone`}>Explore</p>
-          <h2 className="mt-3 font-serif text-4xl font-light sm:text-5xl">The Collections</h2>
+          <Reveal as="p" className={`${eyebrow} text-lux-stone`}>
+            Explore
+          </Reveal>
+          <Reveal variant="text" as="h2" delay={100} className="mt-3 font-serif text-4xl font-light sm:text-5xl">
+            The Collections
+          </Reveal>
         </div>
-        <Link href="/categories" className="group flex items-center gap-3 text-[11px] tracking-[0.3em] whitespace-nowrap uppercase">
-          All collections <ArrowLine className="h-4 w-4 transition-transform duration-500 group-hover:translate-x-1" />
-        </Link>
-      </Reveal>
+        <Reveal delay={300}>
+          <Link href="/categories" className="group flex items-center gap-3 text-[11px] tracking-[0.3em] whitespace-nowrap uppercase">
+            All collections <ArrowLine className="h-4 w-4 transition-transform duration-500 group-hover:translate-x-1" />
+          </Link>
+        </Reveal>
+      </div>
 
       <div className="-mx-6 mt-12 flex snap-x snap-mandatory gap-4 overflow-x-auto px-6 [scrollbar-width:none] sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-6 sm:overflow-visible sm:px-0 lg:grid-cols-4 [&::-webkit-scrollbar]:hidden">
         {categories.map((c, i) => (
-          <Reveal key={c.id} delay={i * 120} className="w-[72vw] shrink-0 snap-start sm:w-auto">
+          <Reveal key={c.id} variant="card" delay={i * 150} className="w-[72vw] shrink-0 snap-start sm:w-auto">
             <Link href={`/categories/${c.slug}`} className="group relative block aspect-[3/4] overflow-hidden bg-lux-coal">
-              <Image
-                src={PHOTOS[i % PHOTOS.length]}
-                alt=""
-                fill
-                sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 72vw"
-                className="object-cover opacity-85 transition-[transform,opacity] duration-[1800ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.07] group-hover:opacity-100"
-              />
+              <div className="lux-card-media absolute inset-0">
+                <Image
+                  src={PHOTOS[i % PHOTOS.length]}
+                  alt=""
+                  fill
+                  sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 72vw"
+                  className="object-cover opacity-85 transition-[scale,opacity] duration-[1800ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.07] group-hover:opacity-100"
+                />
+              </div>
               <div className="absolute inset-0 bg-gradient-to-t from-lux-ink/85 via-lux-ink/10 to-transparent" />
               <div className="absolute inset-x-0 bottom-0 p-6 text-lux-ivory">
                 <p className="text-[10px] tracking-[0.3em] text-lux-brass-light uppercase">0{i + 1}</p>
@@ -165,18 +177,22 @@ async function Curated() {
   return (
     <section className="bg-lux-linen/60 py-28 sm:py-36">
       <div className="mx-auto max-w-7xl px-6 sm:px-8">
-        <Reveal className="text-center">
-          <p className={`${eyebrow} text-lux-stone`}>Selected for you</p>
-          <h2 className="mt-3 font-serif text-4xl font-light sm:text-5xl">The Curated Edit</h2>
-        </Reveal>
+        <div className="text-center">
+          <Reveal as="p" className={`${eyebrow} text-lux-stone`}>
+            Selected for you
+          </Reveal>
+          <Reveal variant="text" as="h2" delay={100} className="mt-3 font-serif text-4xl font-light sm:text-5xl">
+            The Curated Edit
+          </Reveal>
+        </div>
         <div className="-mx-6 mt-14 flex snap-x snap-mandatory gap-5 overflow-x-auto px-6 pb-2 [scrollbar-width:none] sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-8 sm:overflow-visible sm:px-0 lg:grid-cols-4 [&::-webkit-scrollbar]:hidden">
           {products.map((p, i) => (
-            <Reveal key={p.id} delay={i * 120} className="w-[68vw] shrink-0 snap-start sm:w-auto">
+            <Reveal key={p.id} variant="card" delay={i * 150} className="w-[68vw] shrink-0 snap-start sm:w-auto">
               <LuxProductCard product={p} category={categoryName.get(p.categoryId)} sample={PHOTOS[(i + 2) % PHOTOS.length]} preferSample />
             </Reveal>
           ))}
         </div>
-        <Reveal className="mt-16 text-center">
+        <Reveal delay={300} className="mt-16 text-center">
           <Link href="/products" className={`${outlineButton} border-lux-ink/40 hover:border-lux-ink hover:bg-lux-ink hover:text-lux-ivory`}>
             View all pieces
             <ArrowLine className="h-4 w-4 transition-transform duration-500 group-hover:translate-x-1" />
@@ -191,23 +207,29 @@ function Editorial() {
   return (
     <section className="bg-lux-ink text-lux-ivory">
       <div className="mx-auto grid max-w-7xl items-center lg:grid-cols-2">
-        <Reveal className="relative aspect-[4/3] overflow-hidden lg:aspect-auto lg:h-[720px]">
-          <Image src="/preview/cigar-glass.jpg" alt="A cigar resting across a glass" fill sizes="(min-width: 1024px) 50vw, 100vw" className="object-cover" />
+        <Reveal variant="card" className="relative aspect-[4/3] overflow-hidden lg:aspect-auto lg:h-[720px]">
+          <div className="lux-card-media absolute inset-0">
+            <Image src="/preview/cigar-glass.jpg" alt="A cigar resting across a glass" fill sizes="(min-width: 1024px) 50vw, 100vw" className="object-cover" />
+          </div>
         </Reveal>
-        <Reveal delay={150} className="px-6 py-20 sm:px-16 lg:py-0">
-          <p className={`${eyebrow} text-lux-brass-light`}>The Ritual</p>
-          <h2 className="mt-5 font-serif text-[clamp(2.4rem,4.5vw,3.8rem)] leading-[1.05] font-light">
+        <div className="px-6 py-20 sm:px-16 lg:py-0">
+          <Reveal as="p" delay={200} className={`${eyebrow} text-lux-brass-light`}>
+            The Ritual
+          </Reveal>
+          <Reveal variant="text" as="h2" delay={300} className="mt-5 font-serif text-[clamp(2.4rem,4.5vw,3.8rem)] leading-[1.05] font-light">
             Made for the moments worth <em className="text-lux-brass-light">slowing down</em> for.
-          </h2>
-          <p className="mt-8 max-w-md leading-relaxed font-light text-lux-ivory/75">
+          </Reveal>
+          <Reveal as="p" delay={700} className="mt-8 max-w-md leading-relaxed font-light text-lux-ivory/75">
             Every piece in our collection is chosen by hand — refillable lighters built to last a lifetime, cases that age beautifully, and the
             accessories that complete the ritual.
-          </p>
-          <Link href="/products" className="group mt-10 inline-flex items-center gap-3 text-[11px] tracking-[0.3em] text-lux-brass-light uppercase">
-            Discover the lighters
-            <span className="h-px w-8 bg-lux-brass-light transition-all duration-700 group-hover:w-14" />
-          </Link>
-        </Reveal>
+          </Reveal>
+          <Reveal delay={850}>
+            <Link href="/products" className="group mt-10 inline-flex items-center gap-3 text-[11px] tracking-[0.3em] text-lux-brass-light uppercase">
+              Discover the lighters
+              <span className="h-px w-8 bg-lux-brass-light transition-all duration-700 group-hover:w-14" />
+            </Link>
+          </Reveal>
+        </div>
       </div>
     </section>
   );
@@ -223,11 +245,17 @@ function Services() {
     <section className="mx-auto max-w-7xl px-6 py-24 sm:px-8 sm:py-32">
       <div className="grid gap-14 sm:grid-cols-3 sm:gap-0 sm:divide-x sm:divide-lux-ink/10">
         {items.map((it, i) => (
-          <Reveal key={it.title} delay={i * 120} className="px-6 text-center sm:px-10">
-            <span className="inline-block text-lux-brass">{it.icon}</span>
-            <h3 className="mt-6 font-serif text-2xl font-light">{it.title}</h3>
-            <p className="mx-auto mt-3 max-w-xs text-sm leading-relaxed font-light text-lux-stone">{it.text}</p>
-          </Reveal>
+          <div key={it.title} className="px-6 text-center sm:px-10">
+            <Reveal delay={i * 150}>
+              <span className="inline-block text-lux-brass">{it.icon}</span>
+            </Reveal>
+            <Reveal variant="text" as="h3" delay={i * 150 + 150} className="mt-6 font-serif text-2xl font-light">
+              {it.title}
+            </Reveal>
+            <Reveal as="p" delay={i * 150 + 300} className="mx-auto mt-3 max-w-xs text-sm leading-relaxed font-light text-lux-stone">
+              {it.text}
+            </Reveal>
+          </div>
         ))}
       </div>
     </section>
@@ -239,10 +267,14 @@ function Quote() {
     <section className="relative overflow-hidden bg-lux-ink py-36 text-center text-lux-ivory sm:py-48">
       <Image src="/preview/smoke.jpg" alt="" fill sizes="100vw" className="object-cover opacity-45" />
       <div className="absolute inset-0 bg-lux-ink/40" />
-      <Reveal className="relative mx-auto max-w-4xl px-6">
-        <p className="font-serif text-[clamp(2rem,5vw,4rem)] leading-tight font-light italic">“Some pleasures are meant to be savoured slowly.”</p>
-        <span className="mx-auto mt-10 block h-px w-16 bg-lux-brass" />
-      </Reveal>
+      <div className="relative mx-auto max-w-4xl px-6">
+        <Reveal variant="text" as="p" stagger={90} className="font-serif text-[clamp(2rem,5vw,4rem)] leading-tight font-light italic">
+          “Some pleasures are meant to be savoured slowly.”
+        </Reveal>
+        <Reveal delay={900}>
+          <span className="mx-auto mt-10 block h-px w-16 bg-lux-brass" />
+        </Reveal>
+      </div>
     </section>
   );
 }
@@ -251,13 +283,17 @@ async function Concierge() {
   const { whatsapp } = await getStoreSettings();
   return (
     <section className="px-6 py-28 text-center sm:py-36">
-      <Reveal className="mx-auto max-w-2xl">
-        <p className={`${eyebrow} text-lux-stone`}>Private client service</p>
-        <h2 className="mt-4 font-serif text-4xl font-light sm:text-5xl">At your service</h2>
-        <p className="mt-6 leading-relaxed font-light text-lux-stone">
+      <div className="mx-auto max-w-2xl">
+        <Reveal as="p" className={`${eyebrow} text-lux-stone`}>
+          Private client service
+        </Reveal>
+        <Reveal variant="text" as="h2" delay={100} className="mt-4 font-serif text-4xl font-light sm:text-5xl">
+          At your service
+        </Reveal>
+        <Reveal as="p" delay={400} className="mt-6 leading-relaxed font-light text-lux-stone">
           Looking for something particular, or a gift? Our team will gladly help you choose — usually within the hour.
-        </p>
-        <div className="mt-10">
+        </Reveal>
+        <Reveal delay={550} className="mt-10">
           <a
             href={whatsapp ? whatsappHref(whatsapp, "Hello MatchBox, I'd like some help choosing.") : "/products"}
             target={whatsapp ? "_blank" : undefined}
@@ -267,8 +303,8 @@ async function Concierge() {
             {whatsapp ? "Message us on WhatsApp" : "Browse the collection"}
             <ArrowLine className="h-4 w-4 transition-transform duration-500 group-hover:translate-x-1" />
           </a>
-        </div>
-      </Reveal>
+        </Reveal>
+      </div>
     </section>
   );
 }

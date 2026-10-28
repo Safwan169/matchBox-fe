@@ -97,16 +97,63 @@ body {
 }
 .lux-cue { animation: lux-cue 2.4s cubic-bezier(0.65, 0, 0.35, 1) infinite; }
 
-/* Scroll-reveal (toggled by <Reveal>). */
+/* Hero copy below the headline: slides up from below. */
+@keyframes lux-up {
+  from { opacity: 0; transform: translate3d(0, 48px, 0); }
+  to { opacity: 1; transform: none; }
+}
+.lux-up { animation: lux-up 1.4s cubic-bezier(0.16, 1, 0.3, 1) both; }
+
+/* ---- Scroll reveals, toggled by <Reveal> (data-shown) ---- */
+:root { --lux-ease-out: cubic-bezier(0.16, 1, 0.3, 1); --lux-ease-wipe: cubic-bezier(0.77, 0, 0.175, 1); }
+
+/* "up": slides up from well below while fading in. */
 .lux-reveal {
   opacity: 0;
-  transform: translate3d(0, 28px, 0);
-  transition: opacity 1.1s ease, transform 1.3s cubic-bezier(0.22, 1, 0.36, 1);
+  transform: translate3d(0, 90px, 0);
+  transition: opacity 1s ease, transform 1.5s var(--lux-ease-out);
   transition-delay: var(--lux-delay, 0ms);
 }
 .lux-reveal[data-shown] { opacity: 1; transform: none; }
 
+/* "card": the card wipes upward out of a mask while rising; its photo settles from a zoom. */
+.lux-reveal-card {
+  transform: translate3d(0, 140px, 0);
+  clip-path: inset(100% 0 0 0);
+  transition: transform 1.6s var(--lux-ease-out), clip-path 1.5s var(--lux-ease-wipe);
+  transition-delay: var(--lux-delay, 0ms);
+}
+.lux-reveal-card[data-shown] { transform: none; clip-path: inset(0 0 0 0); }
+.lux-reveal-card .lux-card-media {
+  transform: scale(1.3);
+  transition: transform 2.2s var(--lux-ease-out);
+  transition-delay: var(--lux-delay, 0ms);
+}
+.lux-reveal-card[data-shown] .lux-card-media { transform: none; }
+
+/* "text": every word rises out of its own mask, one after another (After Effects style). */
+.lux-mask {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
+}
+.lux-word {
+  display: inline-block;
+  transform: translate3d(0, 115%, 0) rotate(4deg);
+  transform-origin: left bottom;
+  transition: transform 1.2s var(--lux-ease-out);
+  transition-delay: calc(var(--lux-delay, 0ms) + var(--w, 0) * var(--lux-stagger, 60ms));
+}
+.lux-reveal-text[data-shown] .lux-word { transform: none; }
+
 @media (prefers-reduced-motion: reduce) {
-  .lux-drift, .lux-rise, .lux-fade, .lux-cue { animation: none; }
-  .lux-reveal { opacity: 1; transform: none; transition: none; }
+  .lux-drift, .lux-rise, .lux-fade, .lux-cue, .lux-up { animation: none; }
+  .lux-reveal, .lux-reveal-card, .lux-reveal-card .lux-card-media, .lux-word {
+    opacity: 1;
+    transform: none;
+    clip-path: none;
+    transition: none;
+  }
 }
