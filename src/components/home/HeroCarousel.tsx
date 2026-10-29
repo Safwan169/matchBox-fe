@@ -63,6 +63,15 @@ export function HeroCarousel({ slides, overlay }: { slides: HeroSlide[]; overlay
     return () => clearInterval(timer);
   }, [count, paused]);
 
+  // Next keeps a visited page in the DOM (hidden) after navigating away, so the header can't rely
+  // on finding this section; flag the page while the hero is actually shown (see globals.css).
+  useEffect(() => {
+    if (!overlay) return;
+    const root = document.documentElement;
+    root.setAttribute("data-hero-overlay", "");
+    return () => root.removeAttribute("data-hero-overlay");
+  }, [overlay]);
+
   return (
     <section
       className={`relative grid overflow-hidden bg-lux-ink text-lux-ivory ${overlay ? "-mt-(--header-h) min-h-[100svh]" : "min-h-[80svh]"}`}

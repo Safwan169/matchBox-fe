@@ -9,6 +9,8 @@ import { useEffect } from "react";
  */
 export function RevealObserver() {
   useEffect(() => {
+    // Tells the CSS that client code now owns state such as the header overlay flag.
+    document.documentElement.setAttribute("data-js", "");
     const io = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {

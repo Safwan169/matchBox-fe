@@ -239,7 +239,10 @@ html:has(.theme-lux) body {
   backdrop-filter: blur(12px);
   transition: background-color 0.7s ease, color 0.7s ease, border-color 0.7s ease;
 }
-html:has([data-header-overlay]) .lux-header:not([data-solid]) .lux-header-bar {
+/* Before hydration the section itself decides; afterwards only the hero's flag counts, because a
+   hidden, previously visited home page stays in the DOM (data-js is set by RevealObserver). */
+html:not([data-js]):has([data-header-overlay]) .lux-header:not([data-solid]) .lux-header-bar,
+html[data-hero-overlay] .lux-header:not([data-solid]) .lux-header-bar {
   background: transparent;
   color: var(--lux-ivory);
   border-color: transparent;
