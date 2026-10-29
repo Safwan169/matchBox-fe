@@ -42,7 +42,6 @@ const luxSans = Jost({
 export const metadata: Metadata = {
   title: { default: "MatchBox", template: "%s · MatchBox" },
   description: "Fine lighters, tobacco and smoking accessories, delivered with discretion across Bangladesh.",
-  icons: { icon: "/brand/logo.png" },
 };
 
 // "cover" lets the mobile bottom bar pad itself above the iPhone home indicator.
