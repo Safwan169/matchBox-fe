@@ -8,13 +8,13 @@ export async function WhatsAppButton() {
 
   return (
     <a
-      href={whatsappHref(whatsapp, "Hi MatchBox! I have a question.")}
+      href={whatsappHref(whatsapp, "Hello MatchBox! I have a question.")}
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Chat with us on WhatsApp"
-      className="fixed right-4 bottom-4 z-40 hidden h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg transition hover:scale-105 sm:right-6 sm:bottom-6 md:flex"
+      className="group fixed right-6 bottom-6 z-40 hidden h-14 w-14 items-center justify-center rounded-full border border-lux-brass/40 bg-lux-ink text-lux-brass-light shadow-[0_10px_30px_rgb(0_0_0/0.25)] transition-[transform,background-color] duration-500 hover:-translate-y-1 hover:bg-lux-coal md:flex"
     >
-      <WhatsAppIcon className="h-8 w-8" />
+      <WhatsAppIcon className="h-6 w-6" />
     </a>
   );
 }

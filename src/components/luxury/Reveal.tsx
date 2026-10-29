@@ -1,16 +1,4 @@
-"use client";
-
-import {
-  Children,
-  cloneElement,
-  isValidElement,
-  useEffect,
-  useRef,
-  type CSSProperties,
-  type ElementType,
-  type ReactElement,
-  type ReactNode,
-} from "react";
+import { Children, cloneElement, isValidElement, type CSSProperties, type ElementType, type ReactElement, type ReactNode } from "react";
 
 type Variant = "up" | "card" | "text";
 const variantClass: Record<Variant, string> = { up: "lux-reveal", card: "lux-reveal-card", text: "lux-reveal-text" };
@@ -42,6 +30,9 @@ function splitWords(node: ReactNode, counter: { i: number }): ReactNode {
  * Animates its content in when it scrolls into view (once):
  * "up" slides up, "card" wipes up out of a mask (put `lux-card-media` on the photo wrapper),
  * "text" makes each word rise one after another.
+ *
+ * Plain markup (no client JavaScript per element): one <RevealObserver> in the shop frame
+ * watches every `[data-reveal]` element and sets `data-shown`.
  */
 export function Reveal({
   children,
@@ -58,28 +49,10 @@ export function Reveal({
   as?: ElementType;
   className?: string;
 }) {
-  const ref = useRef<HTMLElement>(null);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          el.setAttribute("data-shown", "");
-          io.disconnect();
-        }
-      },
-      { rootMargin: "0px 0px -12% 0px" },
-    );
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
-
   const style = { "--lux-delay": `${delay}ms`, ...(stagger !== undefined && { "--lux-stagger": `${stagger}ms` }) } as CSSProperties;
 
   return (
-    <Tag ref={ref} className={`${variantClass[variant]} ${className}`} style={style}>
+    <Tag data-reveal="" className={`${variantClass[variant]} ${className}`} style={style}>
       {variant === "text" ? splitWords(children, { i: 0 }) : children}
     </Tag>
   );

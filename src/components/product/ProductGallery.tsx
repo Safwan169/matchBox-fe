@@ -25,7 +25,7 @@ export function ProductGallery({ images, name }: { images: string[]; name: strin
 
   const step = (delta: number) => setActive((i) => (i + delta + images.length) % images.length);
 
-  if (!src) return <ProductImage alt={name} className="rounded-lg" />;
+  if (!src) return <ProductImage alt={name} aspect="aspect-[4/5]" />;
 
   return (
     <div>
@@ -33,7 +33,7 @@ export function ProductGallery({ images, name }: { images: string[]; name: strin
         type="button"
         onClick={() => dialog.current?.showModal()}
         aria-label={`View ${name} full screen`}
-        className="relative block aspect-square w-full cursor-zoom-in overflow-hidden rounded-lg bg-brand-red"
+        className="relative block aspect-[4/5] w-full cursor-zoom-in overflow-hidden bg-(--placeholder-bg)"
       >
         <div className="absolute inset-0" onPointerMove={onPointerMove} onPointerLeave={() => setZoom(null)}>
           <Image

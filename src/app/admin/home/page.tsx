@@ -17,7 +17,11 @@ const TYPES: { type: HomeSectionType; label: string; help: string }[] = [
   { type: "on_sale", label: "On sale", help: "Products with a compare-at price above the price." },
   { type: "category_products", label: "Products from a category", help: "Products from one category you choose." },
   { type: "banner", label: "Image banner", help: "A single wide image, optionally linked." },
-  { type: "text", label: "Text block", help: "A heading and a short paragraph." },
+  { type: "text", label: "Statement", help: "A short paragraph in large type, with an optional small heading." },
+  { type: "editorial", label: "Story (photo + text)", help: "A large photo beside a heading, text and a link. Leave the photo empty to use the built-in one." },
+  { type: "services", label: "Our promises", help: "Authenticity, discreet delivery and cash on delivery, with icons." },
+  { type: "quote", label: "Quote", help: "A large quote over a dark photo. Leave the photo empty to use the built-in smoke photo." },
+  { type: "contact", label: "Contact (WhatsApp)", help: "A heading, a line of text and a “Message us on WhatsApp” button." },
 ];
 const typeInfo = (t: HomeSectionType) => TYPES.find((x) => x.type === t)!;
 const hasLimit = (t: HomeSectionType) => ["featured_products", "new_arrivals", "on_sale", "category_products"].includes(t);
@@ -72,6 +76,8 @@ export default function AdminHomePage() {
     if (hasLimit(s.type)) parts.push(`${s.config.limit ?? 8} products`);
     if (s.type === "banner" && s.config.link) parts.push(`→ ${s.config.link}`);
     if (s.type === "text") parts.push((s.config.body ?? "").slice(0, 60));
+    if (s.type === "quote") parts.push(`“${(s.config.body ?? "").slice(0, 60)}”`);
+    if (s.type === "editorial" && s.config.link) parts.push(`→ ${s.config.link}`);
     return parts.join(" · ");
   }
 
@@ -196,7 +202,14 @@ function SectionForm({
       config.image = images[0];
       config.link = String(f.get("link") ?? "").trim();
     }
-    if (type === "text") config.body = f.get("body");
+    if (type === "text" || type === "quote" || type === "contact") config.body = f.get("body");
+    if (type === "editorial") {
+      config.image = images[0] ?? "";
+      config.body = f.get("body");
+      config.link = String(f.get("link") ?? "").trim();
+      config.linkText = String(f.get("linkText") ?? "").trim();
+    }
+    if (type === "quote") config.image = images[0] ?? "";
 
     const body = { type, title: f.get("title") ?? "", isActive: f.get("isActive") === "on", config };
     setSaving(true);
@@ -218,7 +231,7 @@ function SectionForm({
         <h2 className="font-semibold">{section ? "Edit section" : "New section"}: {typeInfo(type).label}</h2>
         <form onSubmit={onSubmit} className="mt-4 space-y-4">
           <Alert>{error}</Alert>
-          {type !== "hero" && (
+          {type !== "hero" && type !== "quote" && (
             <Field label="Heading" name="title" defaultValue={section?.title ?? defaultTitles[type] ?? ""} maxLength={80} hint="Leave empty for no heading." />
           )}
           {type === "category_products" && (
@@ -237,6 +250,25 @@ function SectionForm({
             </>
           )}
           {type === "text" && <TextArea label="Text" name="body" rows={4} required maxLength={2000} defaultValue={c.body ?? ""} />}
+        {type === "editorial" && (
+          <>
+            <ImageUploader images={images} onChange={setImages} max={1} label="Photo (optional)" help="Tall or square photo works best. Empty = the built-in cigar photo." />
+            <TextArea label="Text" name="body" rows={4} maxLength={1000} defaultValue={c.body ?? ""} />
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Field label="Link (optional)" name="link" defaultValue={c.link ?? ""} placeholder="/categories/lighters" />
+              <Field label="Link text" name="linkText" defaultValue={c.linkText ?? ""} maxLength={40} placeholder="Discover the lighters" />
+            </div>
+          </>
+        )}
+        {type === "quote" && (
+          <>
+            <TextArea label="Quote" name="body" rows={2} required maxLength={300} defaultValue={c.body ?? ""} />
+            <ImageUploader images={images} onChange={setImages} max={1} label="Background photo (optional)" help="A dark photo works best. Empty = the built-in smoke photo." />
+          </>
+        )}
+        {type === "contact" && (
+          <TextArea label="Text" name="body" rows={2} maxLength={500} defaultValue={c.body ?? ""} hint="The button uses the WhatsApp number from Settings." />
+        )}
           {type === "hero" && (
             <p className="text-sm text-brand-brown">
               The banners themselves are managed in{" "}

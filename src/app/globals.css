@@ -13,6 +13,7 @@
 
   --background: var(--brand-cream);
   --foreground: var(--brand-charcoal);
+  --placeholder-bg: var(--brand-red); /* product image placeholder */
 }
 
 @theme inline {
@@ -156,4 +157,90 @@ body {
     clip-path: none;
     transition: none;
   }
+}
+
+/* ---------- Storefront theme ----------
+   The shop (StoreFrame, age gate) carries .theme-lux, which re-points the shared brand tokens
+   to the luxury palette and fonts, so shared components restyle without touching the admin. */
+.theme-lux {
+  --brand-red: var(--lux-ink);
+  --brand-red-dark: #2b2621;
+  --brand-cream: var(--lux-ivory);
+  --brand-charcoal: var(--lux-ink);
+  --brand-brown: var(--lux-stone);
+  --brand-flame: var(--lux-brass);
+  --brand-flame-light: #efe6d6;
+  --brand-wood: var(--lux-brass-light);
+  --background: var(--lux-ivory);
+  --foreground: var(--lux-ink);
+  --font-ultra: var(--font-lux-serif);
+  --font-body: var(--font-lux-sans);
+  --placeholder-bg: var(--lux-linen);
+  --header-h: 96px; /* announcement (32) + bar (64); see LuxHeader */
+}
+@media (min-width: 640px) {
+  .theme-lux { --header-h: 112px; } /* bar is 80px from sm */
+}
+/* Streamed page parts wait at the end of <body> (outside .theme-lux) before moving into place;
+   give the body the shop font too, so the admin font (Work Sans) is never downloaded here. */
+html:has(.theme-lux) body {
+  font-family: var(--font-lux-sans), system-ui, sans-serif;
+  background: var(--lux-ivory);
+}
+/* Display type is a light serif here; and corners are square, as in the design. */
+.theme-lux .font-display { font-weight: 400; letter-spacing: 0.005em; }
+.theme-lux :is(.rounded, .rounded-sm, .rounded-md, .rounded-lg, .rounded-xl) { border-radius: 0; }
+
+/* Shared buttons, cards and page titles (components/ui.tsx) in the shop's voice. */
+.theme-lux .ui-btn {
+  padding: 0.95rem 1.9rem;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  transition-duration: 400ms;
+}
+.theme-lux .ui-title {
+  font-family: var(--font-lux-serif);
+  font-size: clamp(2.5rem, 5vw, 3.5rem);
+  font-weight: 300;
+  line-height: 1.1;
+}
+.theme-lux .ui-label {
+  margin-bottom: 0.6rem;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--lux-stone);
+}
+.theme-lux .ui-input {
+  background: color-mix(in srgb, white 55%, transparent);
+  border-color: color-mix(in srgb, var(--lux-ink) 18%, transparent);
+  padding: 0.8rem 1rem;
+  font-weight: 300;
+}
+.theme-lux .ui-input:focus {
+  border-color: var(--lux-ink);
+  --tw-ring-color: color-mix(in srgb, var(--lux-brass) 30%, transparent);
+}
+.theme-lux .ui-card {
+  background: color-mix(in srgb, white 45%, transparent);
+  border-color: color-mix(in srgb, var(--lux-ink) 10%, transparent);
+  padding: 2rem;
+}
+
+/* Header: solid ivory, or transparent over a hero that asks for it (data-header-overlay). */
+.lux-header-bar {
+  background: color-mix(in srgb, var(--lux-ivory) 94%, transparent);
+  color: var(--lux-ink);
+  border-bottom: 1px solid color-mix(in srgb, var(--lux-ink) 10%, transparent);
+  backdrop-filter: blur(12px);
+  transition: background-color 0.7s ease, color 0.7s ease, border-color 0.7s ease;
+}
+html:has([data-header-overlay]) .lux-header:not([data-solid]) .lux-header-bar {
+  background: transparent;
+  color: var(--lux-ivory);
+  border-color: transparent;
+  backdrop-filter: none;
 }

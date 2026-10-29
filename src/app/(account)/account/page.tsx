@@ -17,7 +17,7 @@ function MenuRow({ href, icon, label, hint }: { href: string; icon: ReactNode; l
       <Link href={href} className={rowClass}>
         <span className="text-brand-brown">{icon}</span>
         <span className="flex-1">
-          <span className="block font-medium">{label}</span>
+          <span className="block font-serif text-lg font-light">{label}</span>
           {hint && <span className="block truncate text-xs text-brand-brown">{hint}</span>}
         </span>
         <ChevronRightIcon className="h-5 w-5 text-brand-brown" />
@@ -57,7 +57,7 @@ export default function AccountPage() {
         <div className="mt-2 bg-white/70">
           <button onClick={onLogout} className={`${rowClass} text-brand-red`}>
             <LogoutIcon />
-            <span className="flex-1 font-medium">Log out</span>
+            <span className="flex-1 font-serif text-lg font-light">Log out</span>
           </button>
         </div>
       </div>

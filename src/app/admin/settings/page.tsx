@@ -41,6 +41,8 @@ function SettingsForm({ settings }: { settings: StoreSettings }) {
           email: f.get("email"),
           address: f.get("address"),
           facebookUrl: f.get("facebookUrl"),
+          instagramUrl: f.get("instagramUrl"),
+          tiktokUrl: f.get("tiktokUrl"),
         },
       });
       setStatus({ kind: "success", text: "Saved. Refresh the store to see the changes." });
@@ -57,11 +59,20 @@ function SettingsForm({ settings }: { settings: StoreSettings }) {
         {status && <Alert kind={status.kind}>{status.text}</Alert>}
         <div className="grid gap-4 sm:grid-cols-2">
           <Field label="Phone number" name="phone" type="tel" defaultValue={settings.phone} pattern={BD_PHONE_PATTERN} placeholder="01XXXXXXXXX" hint="Customers can tap to call." />
-          <Field label="WhatsApp number" name="whatsapp" type="tel" defaultValue={settings.whatsapp} pattern={BD_PHONE_PATTERN} placeholder="01XXXXXXXXX" hint="Shows the green chat button." />
+          <Field label="WhatsApp number" name="whatsapp" type="tel" defaultValue={settings.whatsapp} pattern={BD_PHONE_PATTERN} placeholder="01XXXXXXXXX" hint="Shows the chat button and the WhatsApp links." />
         </div>
         <Field label="Email" name="email" type="email" defaultValue={settings.email} placeholder="hello@example.com" />
         <TextArea label="Shop address" name="address" rows={2} maxLength={300} defaultValue={settings.address} />
         <Field label="Facebook page link" name="facebookUrl" type="url" defaultValue={settings.facebookUrl} placeholder="https://facebook.com/yourpage" />
+        <Field label="Instagram link" name="instagramUrl" type="url" defaultValue={settings.instagramUrl} placeholder="https://instagram.com/yourpage" />
+        <Field
+          label="TikTok link"
+          name="tiktokUrl"
+          type="url"
+          defaultValue={settings.tiktokUrl}
+          placeholder="https://tiktok.com/@yourpage"
+          hint="Social links appear as “Follow us” buttons in the footer."
+        />
         <Button type="submit" disabled={saving}>{saving ? "Saving…" : "Save settings"}</Button>
       </form>
     </Card>

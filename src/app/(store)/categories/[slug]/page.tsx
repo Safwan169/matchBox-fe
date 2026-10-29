@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
+import { ListingHeader } from "@/components/product/ListingHeader";
 import { ProductGridSkeleton } from "@/components/product/ProductCard";
 import { ProductListing } from "@/components/product/ProductListing";
 import { ApiError, apiGet } from "@/lib/api";
@@ -18,7 +19,7 @@ export async function generateMetadata({ params }: PageProps<"/categories/[slug]
 
 export default function CategoryPage({ params, searchParams }: PageProps<"/categories/[slug]">) {
   return (
-    <section className="mx-auto w-full max-w-6xl px-4 py-8">
+    <section className="mx-auto w-full max-w-7xl px-6 pb-24 sm:px-8">
       <Suspense fallback={<CategorySkeleton />}>
         <CategoryContent params={params} searchParams={searchParams} />
       </Suspense>
@@ -42,9 +43,10 @@ async function CategoryContent({
 
   return (
     <>
-      <h1 className="font-display text-3xl text-brand-red">{category.name}</h1>
-      {category.description && <p className="mt-2 text-brand-brown">{category.description}</p>}
-      <div className="mt-6">
+      <ListingHeader kicker="The collection" title={category.name}>
+        {category.description && <p>{category.description}</p>}
+      </ListingHeader>
+      <div>
         <ProductListing searchParams={searchParams} basePath={`/categories/${category.slug}`} category={category.slug} />
       </div>
     </>
@@ -54,8 +56,8 @@ async function CategoryContent({
 function CategorySkeleton() {
   return (
     <>
-      <div className="h-9 w-48 animate-pulse rounded bg-brand-brown/10" />
-      <div className="mt-6">
+      <div className="mx-auto mt-14 mb-20 h-14 w-64 animate-pulse bg-lux-ink/5" />
+      <div>
         <ProductGridSkeleton />
       </div>
     </>

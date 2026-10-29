@@ -2,6 +2,7 @@ import { Pagination } from "@/components/Pagination";
 import { apiGet } from "@/lib/api";
 import type { ApiList, Product } from "@/lib/types";
 import { InfiniteProductGrid } from "./InfiniteProductGrid";
+import { ProductGrid } from "./ProductCard";
 import { SortSelect } from "./SortSelect";
 
 type SearchParams = Record<string, string | string[] | undefined>;
@@ -35,11 +36,11 @@ export async function ProductListing({ searchParams, basePath, category }: Props
 
   return (
     <>
-      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-        <p className="text-sm text-brand-brown">
-          {search && <>Results for “<strong>{search}</strong>” · </>}
-          {onSale && <>On sale · </>}
-          {meta.total} {meta.total === 1 ? "product" : "products"}
+      <div className="mb-12 flex flex-wrap items-center justify-between gap-3 border-y border-lux-ink/10 py-4">
+        <p className="text-[11px] tracking-[0.2em] text-lux-stone uppercase">
+          {search && <>Results for “<span className="text-lux-ink">{search}</span>” · </>}
+          {onSale && <>Offers · </>}
+          {meta.total} {meta.total === 1 ? "piece" : "pieces"}
         </p>
         <SortSelect />
       </div>
@@ -47,10 +48,12 @@ export async function ProductListing({ searchParams, basePath, category }: Props
       <h2 className="sr-only">Products</h2>
       {products.length > 0 ? (
         // key: start a fresh list when the search, sort or category changes
-        <InfiniteProductGrid key={`${query}|${meta.page}`} initial={products} query={query.toString()} page={meta.page} totalPages={meta.totalPages} />
+        <InfiniteProductGrid key={`${query}|${meta.page}`} initialIds={products.map((p) => p.id)} query={query.toString()} page={meta.page} totalPages={meta.totalPages}>
+          <ProductGrid products={products} />
+        </InfiniteProductGrid>
       ) : (
-        <p className="rounded-lg border border-dashed border-brand-brown/30 py-16 text-center text-brand-brown">
-          No products found.
+        <p className="py-20 text-center font-serif text-2xl font-light text-lux-stone">
+          Nothing here yet — try another search or collection.
         </p>
       )}
 

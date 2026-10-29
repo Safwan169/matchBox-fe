@@ -24,7 +24,8 @@ export function AddToCart({ product }: { product: Product }) {
       <div className="flex flex-wrap items-center gap-3">
         <QuantityInput value={Math.min(quantity, Math.max(remaining, 1))} max={Math.max(remaining, 1)} onChange={setQuantity} />
         <Button
-          variant="accent"
+          variant="primary"
+          className="min-w-56"
           disabled={remaining <= 0}
           onClick={() => {
             add(product, Math.min(quantity, remaining));
@@ -32,14 +33,14 @@ export function AddToCart({ product }: { product: Product }) {
             setAdded(true);
           }}
         >
-          {remaining <= 0 ? "All stock in cart" : "Add to cart"}
+          {remaining <= 0 ? "All stock in your bag" : "Add to bag"}
         </Button>
       </div>
       {added && (
-        <p role="status" className="text-sm text-green-800">
-          Added to cart ·{" "}
-          <Link href="/cart" className="font-semibold underline">
-            View cart
+        <p role="status" className="text-sm text-lux-stone">
+          Added to your bag ·{" "}
+          <Link href="/cart" className="text-lux-ink underline decoration-lux-brass underline-offset-4">
+            View bag
           </Link>
         </p>
       )}

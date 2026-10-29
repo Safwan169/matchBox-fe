@@ -1,49 +1,69 @@
 import Link from "next/link";
+import { Reveal } from "@/components/luxury/Reveal";
+import { formatPrice } from "@/lib/format";
 import type { Product } from "@/lib/types";
-import { RatingBadge } from "@/components/review/Stars";
-import { Price } from "./Price";
+import { AddToBagButton } from "./AddToBagButton";
 import { ProductImage } from "./ProductImage";
 
+/** Server-rendered card; only the "Add to bag" buttons are client components. */
 export function ProductCard({ product, eager = false }: { product: Product; eager?: boolean }) {
-  const outOfStock = product.stock <= 0;
+  const soldOut = product.stock <= 0;
   const onSale = product.compareAtPrice != null && product.compareAtPrice > product.price;
 
   return (
-    <Link
-      href={`/products/${product.slug}`}
-      className="group flex flex-col overflow-hidden rounded-lg border border-brand-brown/15 bg-white/60 transition hover:-translate-y-0.5 hover:shadow-lg"
-    >
+    <article className="group">
       <div className="relative">
-        <ProductImage src={product.images[0]} alt={product.name} hoverZoom eager={eager} />
-        {onSale && (
-          <span className="absolute top-2 left-2 rounded bg-brand-flame px-2 py-0.5 text-xs font-bold text-brand-charcoal">
-            SALE
-          </span>
+        <Link href={`/products/${product.slug}`} aria-label={product.name} className="lux-card-media block">
+          <ProductImage
+            src={product.images[0]}
+            alt={product.name}
+            aspect="aspect-[4/5]"
+            sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
+            hoverZoom
+            eager={eager}
+          />
+        </Link>
+        {onSale && !soldOut && (
+          <span className="absolute top-3 left-3 bg-lux-ivory px-2.5 py-1 text-[9px] tracking-[0.25em] text-lux-oxblood uppercase">Offer</span>
         )}
-        {outOfStock && (
-          <span className="absolute top-2 right-2 rounded bg-brand-charcoal px-2 py-0.5 text-xs font-bold text-brand-cream">
-            Sold out
-          </span>
+        {soldOut && <span className="absolute top-3 left-3 bg-lux-ink px-2.5 py-1 text-[9px] tracking-[0.25em] text-lux-ivory uppercase">Sold out</span>}
+        {!soldOut && <AddToBagButton product={product} look="overlay" />}
+      </div>
+      <div className="mt-4 space-y-1 text-center sm:mt-5 sm:space-y-1.5">
+        {product.brand && <p className="text-[9px] tracking-[0.3em] text-lux-stone uppercase sm:text-[10px]">{product.brand}</p>}
+        <h3 className="font-serif text-lg leading-snug sm:text-xl">
+          <Link href={`/products/${product.slug}`} className="transition-colors duration-300 hover:text-lux-brass">
+            {product.name}
+          </Link>
+        </h3>
+        <p className="text-sm tracking-wide">
+          <span className={onSale ? "text-lux-oxblood" : ""}>{formatPrice(product.price)}</span>
+          {onSale && <span className="ml-2 text-lux-stone line-through">{formatPrice(product.compareAtPrice!)}</span>}
+        </p>
+        {product.ratingCount > 0 && (
+          <p className="text-[11px] text-lux-stone">
+            <span className="text-lux-brass">★</span> {product.ratingAverage.toFixed(1)} · {product.ratingCount} review{product.ratingCount === 1 ? "" : "s"}
+          </p>
         )}
+        {!soldOut && <AddToBagButton product={product} look="text" />}
       </div>
-      <div className="flex flex-1 flex-col gap-1 p-3">
-        {product.brand && <p className="text-xs tracking-wide text-brand-brown uppercase">{product.brand}</p>}
-        <h3 className="line-clamp-2 font-semibold group-hover:text-brand-red">{product.name}</h3>
-        <RatingBadge average={product.ratingAverage} count={product.ratingCount} className="text-xs" />
-        <Price price={product.price} compareAtPrice={product.compareAtPrice} className="mt-auto pt-1" />
-      </div>
-    </Link>
+    </article>
   );
 }
 
 /** The first row is usually visible without scrolling, so load those images right away. */
 export const EAGER_COUNT = 4;
 
+export const PRODUCT_GRID_CLASS = "grid grid-cols-2 gap-x-4 gap-y-12 md:grid-cols-3 md:gap-x-6 lg:grid-cols-4 lg:gap-y-16";
+
+/** Product cards that wipe up into view, one after another along each row. */
 export function ProductGrid({ products }: { products: Product[] }) {
   return (
-    <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+    <div className={PRODUCT_GRID_CLASS}>
       {products.map((p, i) => (
-        <ProductCard key={p.id} product={p} eager={i < EAGER_COUNT} />
+        <Reveal key={p.id} variant="card" delay={(i % 4) * 120}>
+          <ProductCard product={p} eager={i < EAGER_COUNT} />
+        </Reveal>
       ))}
     </div>
   );
@@ -51,15 +71,12 @@ export function ProductGrid({ products }: { products: Product[] }) {
 
 export function ProductGridSkeleton({ count = 8 }: { count?: number }) {
   return (
-    <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4" aria-busy="true">
+    <div className={PRODUCT_GRID_CLASS} aria-busy="true">
       {Array.from({ length: count }, (_, i) => (
-        <div key={i} className="animate-pulse overflow-hidden rounded-lg border border-brand-brown/10">
-          <div className="aspect-square bg-brand-brown/10" />
-          <div className="space-y-2 p-3">
-            <div className="h-3 w-1/3 rounded bg-brand-brown/10" />
-            <div className="h-4 w-3/4 rounded bg-brand-brown/10" />
-            <div className="h-4 w-1/4 rounded bg-brand-brown/10" />
-          </div>
+        <div key={i} className="animate-pulse">
+          <div className="aspect-[4/5] bg-lux-ink/5" />
+          <div className="mx-auto mt-5 h-3 w-1/3 bg-lux-ink/5" />
+          <div className="mx-auto mt-3 h-4 w-2/3 bg-lux-ink/5" />
         </div>
       ))}
     </div>

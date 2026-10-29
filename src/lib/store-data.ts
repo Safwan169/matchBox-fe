@@ -18,11 +18,12 @@ function cached() {
 
 export const FALLBACK_SECTIONS: HomeSection[] = [
   { id: "hero", type: "hero", title: "", config: {} },
-  { id: "categories", type: "categories", title: "Shop by category", config: {} },
-  { id: "featured", type: "featured_products", title: "Featured", config: { limit: 8 } },
+  { id: "categories", type: "categories", title: "The Collections", config: {} },
+  { id: "featured", type: "featured_products", title: "The Curated Edit", config: { limit: 4 } },
+  { id: "services", type: "services", title: "", config: {} },
 ];
 
-const EMPTY_SETTINGS: StoreSettings = { phone: "", whatsapp: "", email: "", address: "", facebookUrl: "" };
+const EMPTY_SETTINGS: StoreSettings = { phone: "", whatsapp: "", email: "", address: "", facebookUrl: "", instagramUrl: "", tiktokUrl: "" };
 
 export async function getHomeSections(): Promise<HomeSection[]> {
   "use cache";

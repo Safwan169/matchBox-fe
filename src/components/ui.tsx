@@ -9,7 +9,8 @@ const buttonVariants = {
 };
 
 export function buttonClass(variant: keyof typeof buttonVariants = "primary", extra = "") {
-  return `inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 font-semibold transition disabled:cursor-not-allowed disabled:opacity-50 ${buttonVariants[variant]} ${extra}`;
+  // `ui-btn` / `ui-title` / `ui-card` let the shop theme (.theme-lux) restyle these; the admin keeps this look.
+  return `ui-btn inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 font-semibold transition disabled:cursor-not-allowed disabled:opacity-50 ${buttonVariants[variant]} ${extra}`;
 }
 
 export function Button({
@@ -21,7 +22,7 @@ export function Button({
 }
 
 const inputClass =
-  "w-full rounded-md border border-brand-brown/30 bg-white px-3 py-2 text-brand-charcoal focus:border-brand-red focus:ring-2 focus:ring-brand-red/20 focus:outline-none";
+  "ui-input w-full rounded-md border border-brand-brown/30 bg-white px-3 py-2 text-brand-charcoal focus:border-brand-red focus:ring-2 focus:ring-brand-red/20 focus:outline-none";
 
 interface FieldProps {
   label: string;
@@ -33,7 +34,7 @@ export function Field({ label, hint, error, id, ...props }: FieldProps & InputHT
   const inputId = id ?? props.name;
   return (
     <div>
-      <label htmlFor={inputId} className="mb-1 block text-sm font-semibold">
+      <label htmlFor={inputId} className="ui-label mb-1 block text-sm font-semibold">
         {label}
       </label>
       <input id={inputId} className={inputClass} aria-invalid={!!error} {...props} />
@@ -46,7 +47,7 @@ export function TextArea({ label, error, id, ...props }: FieldProps & TextareaHT
   const inputId = id ?? props.name;
   return (
     <div>
-      <label htmlFor={inputId} className="mb-1 block text-sm font-semibold">
+      <label htmlFor={inputId} className="ui-label mb-1 block text-sm font-semibold">
         {label}
       </label>
       <textarea id={inputId} className={inputClass} aria-invalid={!!error} {...props} />
@@ -59,7 +60,7 @@ export function Select({ label, id, children, ...props }: FieldProps & SelectHTM
   const inputId = id ?? props.name;
   return (
     <div>
-      <label htmlFor={inputId} className="mb-1 block text-sm font-semibold">
+      <label htmlFor={inputId} className="ui-label mb-1 block text-sm font-semibold">
         {label}
       </label>
       <select id={inputId} className={inputClass} {...props}>
@@ -80,11 +81,11 @@ export function Alert({ kind = "error", children }: { kind?: "error" | "success"
 }
 
 export function Card({ children, className = "" }: { children: ReactNode; className?: string }) {
-  return <div className={`rounded-lg border border-brand-brown/15 bg-white/70 p-6 ${className}`}>{children}</div>;
+  return <div className={`ui-card rounded-lg border border-brand-brown/15 bg-white/70 p-6 ${className}`}>{children}</div>;
 }
 
 export function PageTitle({ children }: { children: ReactNode }) {
-  return <h1 className="font-display text-3xl text-brand-red">{children}</h1>;
+  return <h1 className="ui-title font-display text-3xl text-brand-red">{children}</h1>;
 }
 
 /** Turns an API validation error into a readable message. */

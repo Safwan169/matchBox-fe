@@ -124,14 +124,19 @@ export type HomeSectionType =
   | "on_sale"
   | "category_products"
   | "banner"
-  | "text";
+  | "text"
+  | "editorial"
+  | "services"
+  | "quote"
+  | "contact";
 
 export interface HomeSectionConfig {
   limit?: number;
   categoryId?: string;
   categorySlug?: string; // public API only
-  image?: string;
+  image?: string; // "" = the built-in photo (editorial, quote)
   link?: string;
+  linkText?: string;
   body?: string;
 }
 
@@ -160,6 +165,8 @@ export interface StoreSettings {
   email: string;
   address: string;
   facebookUrl: string;
+  instagramUrl: string;
+  tiktokUrl: string;
 }
 
 export interface PageMeta {

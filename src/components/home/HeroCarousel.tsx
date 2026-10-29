@@ -2,28 +2,58 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useCallback, useEffect, useState, type ReactNode } from "react";
+import { Fragment, useCallback, useEffect, useState, type ReactNode } from "react";
+import { ArrowLine } from "@/components/luxury/icons";
 import { assetUrl, isUpload } from "@/lib/assets";
-import type { Promotion } from "@/lib/types";
 
-const INTERVAL_MS = 6000;
+export interface HeroSlide {
+  id: string;
+  image: string; // "/images/..." (built in) or an uploaded/https image
+  alt: string;
+  eyebrow?: string;
+  title: string;
+  /** Words to set in brass italics at the end of the title (the brand slide's "flame."). */
+  accent?: string;
+  subtitle?: string;
+  buttonText?: string;
+  link?: string;
+  showText: boolean;
+}
 
-function CtaLink({ href, children }: { href: string; children: ReactNode }) {
-  const className =
-    "inline-block rounded-md bg-brand-flame px-4 py-2 text-sm font-bold text-brand-charcoal shadow hover:bg-brand-flame-light sm:px-6 sm:py-2.5 sm:text-base";
+const INTERVAL_MS = 7000;
+
+function Heading({ level, className, children }: { level: 1 | 2; className: string; children: ReactNode }) {
+  return level === 1 ? <h1 className={className}>{children}</h1> : <h2 className={className}>{children}</h2>;
+}
+const outlineButton =
+  "group inline-flex items-center gap-3 border border-lux-ivory/60 px-8 py-4 text-[11px] tracking-[0.3em] whitespace-nowrap text-lux-ivory uppercase transition-colors duration-500 hover:border-lux-ivory hover:bg-lux-ivory hover:text-lux-ink";
+
+function Cta({ href, children }: { href: string; children: ReactNode }) {
+  const inner = (
+    <>
+      {children}
+      <ArrowLine className="h-4 w-4 transition-transform duration-500 group-hover:translate-x-1" />
+    </>
+  );
   return href.startsWith("/") ? (
-    <Link href={href} className={className}>{children}</Link>
+    <Link href={href} className={outlineButton}>
+      {inner}
+    </Link>
   ) : (
-    <a href={href} target="_blank" rel="noopener noreferrer" className={className}>{children}</a>
+    <a href={href} target="_blank" rel="noopener noreferrer" className={outlineButton}>
+      {inner}
+    </a>
   );
 }
 
-/** Rotating promotion banners. Pauses on hover/focus and when the user prefers reduced motion. */
-export function HeroCarousel({ promotions }: { promotions: Promotion[] }) {
+/**
+ * Full-screen hero: slides cross-fade with a slow drift, and each slide's words rise in.
+ * Pauses on hover/focus and when the visitor prefers reduced motion.
+ */
+export function HeroCarousel({ slides, overlay }: { slides: HeroSlide[]; overlay: boolean }) {
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
-  const count = promotions.length;
-
+  const count = slides.length;
   const go = useCallback((i: number) => setIndex((i + count) % count), [count]);
 
   useEffect(() => {
@@ -34,87 +64,120 @@ export function HeroCarousel({ promotions }: { promotions: Promotion[] }) {
   }, [count, paused]);
 
   return (
-    <div
-      className="relative overflow-hidden rounded-xl bg-brand-red"
+    <section
+      className={`relative flex min-h-[560px] items-end overflow-hidden bg-lux-ink text-lux-ivory ${overlay ? "-mt-(--header-h) h-[100svh]" : "h-[80svh]"}`}
+      data-header-overlay={overlay ? "" : undefined}
       role="region"
       aria-roledescription="carousel"
-      aria-label="Promotions"
+      aria-label="Highlights"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       onFocus={() => setPaused(true)}
       onBlur={() => setPaused(false)}
     >
-      <div className="flex transition-transform duration-700 ease-out" style={{ transform: `translateX(-${index * 100}%)` }}>
-        {promotions.map((p, i) => (
+      {slides.map((s, i) => {
+        const active = i === index;
+        const builtIn = s.image.startsWith("/images/");
+        return (
           <div
-            key={p.id}
-            className="relative aspect-[1640/624] w-full shrink-0"
+            key={s.id}
+            className={`absolute inset-0 transition-opacity duration-[1400ms] ease-in-out ${active ? "opacity-100" : "opacity-0"}`}
             role="group"
             aria-roledescription="slide"
             aria-label={`${i + 1} of ${count}`}
-            aria-hidden={i !== index}
-            inert={i !== index}
+            aria-hidden={!active}
+            inert={!active}
           >
-            <Image
-              src={assetUrl(p.image)}
-              alt={p.title}
-              fill
-              sizes="(min-width: 1152px) 1152px, 100vw"
-              className="object-cover"
-              unoptimized={!isUpload(p.image)}
-              loading={i === 0 ? "eager" : "lazy"}
-              fetchPriority={i === 0 ? "high" : "auto"}
-            />
-            {p.showText ? (
-              <div className="absolute inset-0 flex flex-col items-start justify-center gap-2 bg-linear-to-r from-brand-charcoal/75 via-brand-charcoal/35 to-transparent p-5 sm:gap-3 sm:p-12">
-                <h2 className="max-w-[70%] font-display text-xl leading-tight text-brand-cream sm:text-4xl lg:text-5xl">{p.title}</h2>
-                {p.subtitle && <p className="max-w-[60%] text-sm text-brand-cream/90 sm:text-lg">{p.subtitle}</p>}
-                {p.link && p.buttonText && (
-                  <div className="mt-1 sm:mt-3">
-                    <CtaLink href={p.link}>{p.buttonText}</CtaLink>
+            {/* Re-keyed when it becomes active, so the drift and text replay. */}
+            <div key={active ? `on-${index}` : "off"} className="absolute inset-0">
+              <Image
+                src={builtIn ? s.image : assetUrl(s.image)}
+                alt={s.alt}
+                fill
+                sizes="100vw"
+                unoptimized={!builtIn && !isUpload(s.image)}
+                preload={i === 0}
+                className={`object-cover object-[60%_center] opacity-95 ${active ? "lux-drift" : ""}`}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-lux-ink via-lux-ink/10 to-lux-ink/30" />
+              <div className="absolute inset-0 bg-gradient-to-r from-lux-ink/70 to-transparent" />
+
+              {s.showText && (
+                <div className="absolute inset-x-0 bottom-0">
+                  <div className="mx-auto w-full max-w-7xl px-6 pb-24 sm:px-8 sm:pb-28">
+                    {s.eyebrow && (
+                      <p className="lux-up text-[10px] tracking-[0.35em] text-lux-brass-light uppercase" style={{ animationDelay: "300ms" }}>
+                        {s.eyebrow}
+                      </p>
+                    )}
+                    {/* The first slide carries the page's h1. */}
+                    <Heading level={i === 0 ? 1 : 2} className="mt-6 max-w-4xl font-serif text-[clamp(2.8rem,8vw,7rem)] leading-[0.98] font-light">
+                      {[...s.title.split(" ").map((w) => ({ w, accent: false })), ...(s.accent ? [{ w: s.accent, accent: true }] : [])].map(({ w, accent }, wi) => (
+                        <Fragment key={wi}>
+                          {wi > 0 && " "}
+                          <span className="lux-mask">
+                            <span
+                              className={`lux-rise inline-block ${accent ? "text-lux-brass-light italic" : ""}`}
+                              style={{ animationDelay: `${450 + wi * 110}ms` }}
+                            >
+                              {w}
+                            </span>
+                          </span>
+                        </Fragment>
+                      ))}
+                    </Heading>
+                    {s.subtitle && (
+                      <p className="lux-up mt-8 max-w-md text-base leading-relaxed font-light text-lux-ivory/80" style={{ animationDelay: "1100ms" }}>
+                        {s.subtitle}
+                      </p>
+                    )}
+                    {s.link && (
+                      <div className="lux-up mt-10" style={{ animationDelay: "1300ms" }}>
+                        <Cta href={s.link}>{s.buttonText || "Discover"}</Cta>
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
-            ) : (
-              p.link && (
-                <div className="absolute bottom-[10%] left-1/2 -translate-x-1/2">
-                  <CtaLink href={p.link}>{p.buttonText || "Shop now"}</CtaLink>
                 </div>
-              )
-            )}
+              )}
+              {!s.showText && s.link && (
+                <div className="absolute inset-x-0 bottom-24 flex justify-center">
+                  <Cta href={s.link}>{s.buttonText || "Discover"}</Cta>
+                </div>
+              )}
+            </div>
           </div>
-        ))}
-      </div>
+        );
+      })}
 
       {count > 1 && (
-        <>
-          <button
-            onClick={() => go(index - 1)}
-            aria-label="Previous promotion"
-            className="absolute top-1/2 left-2 hidden h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-brand-cream/80 text-lg font-bold text-brand-charcoal hover:bg-brand-cream sm:flex"
-          >
-            ‹
-          </button>
-          <button
-            onClick={() => go(index + 1)}
-            aria-label="Next promotion"
-            className="absolute top-1/2 right-2 hidden h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-brand-cream/80 text-lg font-bold text-brand-charcoal hover:bg-brand-cream sm:flex"
-          >
-            ›
-          </button>
-          <div className="absolute inset-x-0 bottom-2 flex justify-center gap-2 sm:bottom-3">
-            {promotions.map((p, i) => (
+        <div className="absolute right-6 bottom-8 flex items-center gap-5 sm:right-8 sm:bottom-10">
+          <span className="font-serif text-sm tracking-widest text-lux-ivory/80">
+            {String(index + 1).padStart(2, "0")} <span className="text-lux-ivory/40">/ {String(count).padStart(2, "0")}</span>
+          </span>
+          <div className="flex gap-2">
+            {slides.map((s, i) => (
               <button
-                key={p.id}
+                key={s.id}
                 onClick={() => go(i)}
-                aria-label={`Show promotion ${i + 1}`}
+                aria-label={`Show slide ${i + 1}`}
                 aria-current={i === index}
-                className={`h-2.5 rounded-full transition-all ${i === index ? "w-6 bg-brand-flame" : "w-2.5 bg-brand-cream/70 hover:bg-brand-cream"}`}
-              />
+                className="relative h-6 w-10 before:absolute before:inset-x-0 before:top-1/2 before:h-px before:bg-lux-ivory/30"
+              >
+                <span className={`absolute inset-x-0 top-1/2 h-px origin-left bg-lux-brass transition-transform duration-700 ${i === index ? "scale-x-100" : "scale-x-0"}`} />
+              </button>
             ))}
           </div>
-        </>
+        </div>
       )}
-    </div>
+
+      {count < 2 && (
+        <div className="absolute bottom-8 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-3 sm:flex">
+          <span className="text-[9px] tracking-[0.35em] text-lux-ivory/60 uppercase">Scroll</span>
+          <span className="relative h-12 w-px overflow-hidden bg-lux-ivory/15">
+            <span className="lux-cue absolute inset-0 bg-lux-brass" />
+          </span>
+        </div>
+      )}
+    </section>
   );
 }
