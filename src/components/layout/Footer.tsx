@@ -6,8 +6,8 @@ import { FacebookMark, FlameMark, InstagramMark, TikTokMark } from "@/components
 import { formatPhone, telHref, whatsappHref } from "@/lib/contact";
 import { getCategories, getStoreSettings } from "@/lib/store-data";
 
-const heading = "text-[10px] tracking-[0.35em] text-lux-ink uppercase";
-const linkClass = "text-sm font-light text-lux-stone transition-colors duration-300 hover:text-lux-ink";
+const heading = "text-[10px] tracking-[0.35em] text-lux-brass-light uppercase";
+const linkClass = "text-sm font-light text-lux-ivory/70 transition-colors duration-300 hover:text-lux-ivory";
 
 // Cached so the static shell doesn't read the clock on every render (cacheComponents).
 async function currentYear() {
@@ -18,7 +18,7 @@ async function currentYear() {
 
 type Social = { href: string; label: string; icon: ReactNode; className: string };
 
-/** Footer: brand and social buttons, three link columns, and a large watermark behind. */
+/** Footer: brand line, contact and social buttons, three link columns, and the wordmark as a signature. */
 export async function Footer() {
   const [settings, categories, year] = await Promise.all([getStoreSettings(), getCategories(), currentYear()]);
 
@@ -72,36 +72,26 @@ export async function Footer() {
   ];
 
   return (
-    <footer className="relative overflow-hidden border-t border-lux-ink/10 bg-gradient-to-b from-lux-ivory to-lux-linen">
-      {/* Watermark */}
-      <p
-        aria-hidden
-        className="pointer-events-none absolute inset-x-0 bottom-16 text-center font-serif text-[21vw] leading-none tracking-[0.06em] text-lux-ink/[0.035] select-none sm:bottom-10"
-      >
-        MATCHBOX
-      </p>
-
-      <div className="relative mx-auto grid max-w-7xl gap-14 px-6 pt-20 pb-16 sm:px-8 lg:grid-cols-[1.35fr_3fr] lg:gap-10">
-        <div className="max-w-sm">
-          <Link href="/" className="inline-flex flex-col items-start gap-2" aria-label="MatchBox home">
-            <FlameMark className="h-6 w-6 text-lux-brass" />
-            <span className="font-serif text-3xl tracking-[0.35em]">MATCHBOX</span>
-          </Link>
-          <p className="mt-6 text-sm leading-relaxed font-light text-lux-stone">
-            Fine lighters, tobacco and smoking accessories — chosen for their craft and delivered with discretion across Bangladesh.
+    <footer className="overflow-hidden bg-lux-ink text-lux-ivory">
+      <div className="mx-auto grid max-w-7xl gap-16 px-6 pt-24 pb-16 sm:px-8 lg:grid-cols-[1.2fr_2fr] lg:gap-20">
+        {/* Brand, contact and social */}
+        <div className="max-w-md">
+          <FlameMark className="h-6 w-6 text-lux-brass" />
+          <p className="mt-6 font-serif text-3xl leading-snug font-light">
+            Fine lighters, tobacco and accessories — <em className="text-lux-brass-light">delivered with discretion.</em>
           </p>
           {(settings.phone || settings.email || settings.address) && (
-            <ul className="mt-6 space-y-1.5 text-sm font-light text-lux-stone">
+            <ul className="mt-8 space-y-1.5 text-sm font-light text-lux-ivory/70">
               {settings.phone && (
                 <li>
-                  <a href={telHref(settings.phone)} className="hover:text-lux-ink">
+                  <a href={telHref(settings.phone)} className="hover:text-lux-ivory">
                     {formatPhone(settings.phone)}
                   </a>
                 </li>
               )}
               {settings.email && (
                 <li>
-                  <a href={`mailto:${settings.email}`} className="hover:text-lux-ink">
+                  <a href={`mailto:${settings.email}`} className="hover:text-lux-ivory">
                     {settings.email}
                   </a>
                 </li>
@@ -109,10 +99,19 @@ export async function Footer() {
               {settings.address && <li className="whitespace-pre-line">{settings.address}</li>}
             </ul>
           )}
+          <a
+            href={contactHref}
+            target={contactHref.startsWith("http") ? "_blank" : undefined}
+            rel={contactHref.startsWith("http") ? "noopener noreferrer" : undefined}
+            className="group mt-10 inline-flex items-center gap-3 border border-lux-ivory/40 px-7 py-3.5 text-[11px] tracking-[0.3em] uppercase transition-colors duration-500 hover:border-lux-ivory hover:bg-lux-ivory hover:text-lux-ink"
+          >
+            Contact us
+            <span className="h-px w-6 bg-current transition-all duration-500 group-hover:w-10" />
+          </a>
 
           {socials.length > 0 && (
             <>
-              <p className={`${heading} mt-10`}>Follow us</p>
+              <p className={`${heading} mt-12`}>Follow us</p>
               <div className="mt-4 grid grid-cols-3 gap-2">
                 {socials.map((s, i) => (
                   <a
@@ -131,7 +130,8 @@ export async function Footer() {
           )}
         </div>
 
-        <div className="grid grid-cols-2 gap-x-6 gap-y-12 sm:grid-cols-3 lg:gap-10">
+        {/* Link columns */}
+        <div className="grid grid-cols-2 gap-x-6 gap-y-12 sm:grid-cols-3 lg:gap-10 lg:pt-2">
           {columns.map((col) => (
             <nav key={col.title} aria-label={col.title}>
               <p className={heading}>{col.title}</p>
@@ -155,14 +155,21 @@ export async function Footer() {
         </div>
       </div>
 
-      <div className="relative border-t border-lux-ink/10">
-        <div className="mx-auto flex max-w-7xl flex-col gap-4 px-6 py-7 text-xs font-light text-lux-stone sm:px-8 lg:flex-row lg:items-center lg:justify-between">
+      {/* The wordmark as a signature across the full width, whole and below the content. */}
+      <div aria-hidden className="mx-auto max-w-7xl border-t border-lux-ivory/10 px-6 pt-10 sm:px-8">
+        <p className="pl-[0.08em] text-center font-serif text-[min(12.2rem,calc((100vw-4rem)/6.3))] leading-[0.85] font-light tracking-[0.08em] whitespace-nowrap text-lux-ivory/[0.09] select-none">
+          MATCHBOX
+        </p>
+      </div>
+
+      <div className="border-t border-lux-ivory/10">
+        <div className="mx-auto flex max-w-7xl flex-col gap-4 px-6 py-7 text-xs font-light text-lux-ivory/60 sm:px-8 lg:flex-row lg:items-center lg:justify-between">
           <p>© {year} MatchBox. For adults aged 18 and over — please smoke responsibly.</p>
           <div className="flex flex-wrap items-center gap-x-8 gap-y-3">
-            <Link href="/privacy" className="hover:text-lux-ink">
+            <Link href="/privacy" className="hover:text-lux-ivory">
               Privacy
             </Link>
-            <Link href="/terms" className="hover:text-lux-ink">
+            <Link href="/terms" className="hover:text-lux-ivory">
               Terms
             </Link>
             <span className="flex items-center gap-2">

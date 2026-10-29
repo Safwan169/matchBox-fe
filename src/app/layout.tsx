@@ -55,7 +55,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <head>
         <script dangerouslySetInnerHTML={{ __html: AGE_GATE_SCRIPT }} />
       </head>
-      <body className="flex min-h-full flex-col">
+      {/* suppressHydrationWarning: browser extensions (e.g. ColorZilla) add attributes to <body>. */}
+      <body className="flex min-h-full flex-col" suppressHydrationWarning>
         <AuthProvider>
           {/* The shop's header and footer live in (store)/layout; admin has its own. */}
           <CartProvider>{children}</CartProvider>
