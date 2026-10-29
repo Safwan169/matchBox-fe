@@ -19,7 +19,7 @@ export function ImageUploader({
   onChange,
   max = 10,
   label = "Images",
-  help = "The first image is the main photo. JPEG, PNG, WebP or GIF, up to 5 MB each.",
+  help = "The first image is the main photo. JPEG, PNG, WebP or GIF, up to 4 MB each.",
 }: Props) {
   const input = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);

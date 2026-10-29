@@ -26,7 +26,9 @@ const serverHeaders: Record<string, string> =
 // requests from the browser carry the session.
 export async function api<T>(path: string, { body, headers, ...init }: ApiOptions = {}): Promise<T> {
   const isForm = typeof FormData !== "undefined" && body instanceof FormData;
-  const res = await fetch(`${API_URL}${path}`, {
+  // The browser goes through this site's /backend proxy (src/proxy.ts) so the session cookie is first-party.
+  const base = typeof window === "undefined" ? API_URL : "/backend";
+  const res = await fetch(`${base}${path}`, {
     credentials: "include",
     ...init,
     headers: {
