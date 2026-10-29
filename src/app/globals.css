@@ -266,3 +266,29 @@ html[data-hero-overlay] .lux-header:not([data-solid]) .lux-header-bar {
   .lux-shutter .lux-footer-bar > div { padding-block: clamp(0.9rem, 3svh, 2rem); }
   html[data-footer-open] .lux-header { transform: translateY(-100%); }
 }
+
+/* Flame cursor (mouse only): the logo's golden flame, filled over things you can click, with a
+   soft gold ring trailing it (LuxCursor). Text fields keep the text cursor. */
+@media (pointer: fine) {
+  .theme-lux, .theme-lux * { cursor: url("/cursors/flame.svg") 11 5, auto; }
+  .theme-lux :is(a, button, [role="button"], select, label, summary, input[type="checkbox"], input[type="radio"]),
+  .theme-lux :is(a, button, [role="button"], label, summary) * { cursor: url("/cursors/flame-fill.svg") 11 5, pointer; }
+  .theme-lux :is(input:not([type="checkbox"], [type="radio"], [type="submit"], [type="button"]), textarea) { cursor: text; }
+  .theme-lux :is(button, input):disabled { cursor: url("/cursors/flame.svg") 11 5, not-allowed; }
+}
+.lux-cursor-ring {
+  position: fixed;
+  top: -18px;
+  left: -18px;
+  z-index: 9999;
+  width: 36px;
+  height: 36px;
+  border: 1px solid color-mix(in srgb, var(--lux-brass) 70%, transparent);
+  border-radius: 9999px;
+  pointer-events: none;
+  opacity: 0;
+  scale: 0.6;
+  transition: opacity 0.4s ease, scale 0.5s var(--lux-ease-out), background-color 0.5s ease;
+}
+.lux-cursor-ring[data-visible] { opacity: 1; scale: 1; }
+.lux-cursor-ring[data-visible][data-hover] { scale: 1.6; background: color-mix(in srgb, var(--lux-brass) 10%, transparent); }
