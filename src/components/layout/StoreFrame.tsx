@@ -20,7 +20,7 @@ function HeaderFallback({ className }: { className: string }) {
 }
 
 /**
- * The shop's frame: luxury theme (.theme-lux), fixed header, footer and phone bottom bar.
+ * The shop's frame: luxury theme (.theme-lux), fixed header, shutter footer and phone bottom bar.
  * Not used in the admin area. `mobileChrome={false}` hides the header and footer on phones
  * (app-style pages that bring their own top bar, like My account); the bottom bar stays.
  */
@@ -32,10 +32,15 @@ export function StoreFrame({ children, mobileChrome = true }: { children: ReactN
       <Suspense fallback={<HeaderFallback className={desktopOnly} />}>
         <Header className={desktopOnly} />
       </Suspense>
-      {/* Room for the fixed header; a home hero pulls itself up under it (data-header-overlay). */}
-      <div aria-hidden className={`h-(--header-h) shrink-0 ${desktopOnly}`} />
-      <main className="flex min-h-screen flex-1 flex-col">{children}</main>
-      <div className={desktopOnly}>
+      {/* The page is the "shutter": it scrolls up to uncover the footer fixed behind it (see .lux-shutter). */}
+      <div className="lux-page relative z-10 flex flex-1 flex-col bg-background">
+        {/* Room for the fixed header; a home hero pulls itself up under it (data-header-overlay). */}
+        <div aria-hidden className={`h-(--header-h) shrink-0 ${desktopOnly}`} />
+        <main className="flex min-h-screen flex-1 flex-col">{children}</main>
+      </div>
+      {/* Scroll room for uncovering the footer; its words rise once 30% of it is uncovered. */}
+      <div aria-hidden id="footer-shutter" className="lux-shutter-space" />
+      <div className={`lux-shutter ${desktopOnly}`} data-reveal-by="footer-shutter">
         <Footer />
       </div>
       {/* Keeps the end of the page above the fixed bottom bar on phones. */}

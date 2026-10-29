@@ -114,8 +114,8 @@ export async function Footer() {
   ];
 
   return (
-    <footer className="relative overflow-hidden border-t border-lux-ink/10 bg-lux-ivory text-lux-ink">
-      <div className="relative">
+    <footer className="relative flex flex-col overflow-hidden border-t border-lux-ink/10 bg-lux-ivory text-lux-ink">
+      <div className="relative flex-1">
         {/* The wordmark, whole and faint behind the columns across the full width, fading towards the bottom. */}
         <div
           aria-hidden
@@ -128,7 +128,7 @@ export async function Footer() {
           </Reveal>
         </div>
 
-        <div className="relative mx-auto max-w-7xl px-6 pt-24 pb-28 sm:px-8 lg:pt-28 lg:pb-40">
+        <div className="lux-footer-main relative mx-auto max-w-7xl px-6 pt-24 pb-28 sm:px-8 lg:pt-28 lg:pb-40">
           <div className="relative grid gap-16 lg:grid-cols-[1.1fr_2fr] lg:gap-20">
             {/* Brand, contact and social */}
             <div className="max-w-md">

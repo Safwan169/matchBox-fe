@@ -11,12 +11,17 @@ export function RevealObserver() {
   useEffect(() => {
     // Tells the CSS that client code now owns state such as the header overlay flag.
     document.documentElement.setAttribute("data-js", "");
+    // Elements in a fixed container (the shutter footer) are always "on screen", even while covered,
+    // so they wait for the container's trigger element (data-reveal-by="<id>") instead.
+    const groups = new Map<Element, Element[]>();
+
     const io = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
           // The first report can arrive below the threshold, so check the ratio too.
           if (!entry.isIntersecting || entry.intersectionRatio < 0.3) continue;
-          entry.target.setAttribute("data-shown", "");
+          (groups.get(entry.target) ?? [entry.target]).forEach((el) => el.setAttribute("data-shown", ""));
+          groups.delete(entry.target);
           io.unobserve(entry.target);
         }
       },
@@ -24,8 +29,16 @@ export function RevealObserver() {
       { threshold: 0.3 },
     );
 
+    const watch = (el: Element) => {
+      const box = el.closest<HTMLElement>("[data-reveal-by]");
+      const trigger = box && getComputedStyle(box).position === "fixed" ? document.getElementById(box.dataset.revealBy ?? "") : null;
+      if (!trigger) return io.observe(el);
+      groups.set(trigger, [...(groups.get(trigger) ?? []), el]);
+      io.observe(trigger);
+    };
+
     const observeWithin = (root: ParentNode) => {
-      root.querySelectorAll("[data-reveal]:not([data-shown])").forEach((el) => io.observe(el));
+      root.querySelectorAll("[data-reveal]:not([data-shown])").forEach(watch);
     };
     observeWithin(document);
 
@@ -33,7 +46,7 @@ export function RevealObserver() {
       for (const m of mutations) {
         m.addedNodes.forEach((node) => {
           if (!(node instanceof Element)) return;
-          if (node.matches("[data-reveal]:not([data-shown])")) io.observe(node);
+          if (node.matches("[data-reveal]:not([data-shown])")) watch(node);
           observeWithin(node);
         });
       }
