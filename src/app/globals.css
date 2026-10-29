@@ -260,7 +260,7 @@ html[data-hero-overlay] .lux-header:not([data-solid]) .lux-header-bar {
 @media (min-width: 1024px) and (min-height: 500px) {
   .lux-page { position: sticky; top: var(--page-stick, 0px); }
   .lux-shutter { position: relative; z-index: 10; }
-  .lux-shutter > footer { min-height: 100svh; box-shadow: 0 -30px 60px -30px rgb(15 13 11 / 0.35); }
+  .lux-shutter > footer { min-height: 100svh; }
   /* Spacing shrinks on short screens (laptops at 125-150% scaling) so everything fits. */
   .lux-shutter .lux-footer-main { padding-top: clamp(1.5rem, 11svh, 7rem); padding-bottom: clamp(1rem, 4svh, 3rem); }
   .lux-shutter .lux-footer-bar > div { padding-block: clamp(0.9rem, 3svh, 2rem); }
