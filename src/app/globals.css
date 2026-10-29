@@ -182,6 +182,9 @@ body {
 @media (min-width: 640px) {
   .theme-lux { --header-h: 112px; } /* bar is 80px from sm */
 }
+/* Cards wait zoomed in (scale 1.3) before they reveal, which would poke past the right edge.
+   clip (not hidden) keeps the sticky page working. */
+.theme-lux { overflow-x: clip; }
 /* Streamed page parts wait at the end of <body> (outside .theme-lux) before moving into place;
    give the body the shop font too, so the admin font (Work Sans) is never downloaded here. */
 html:has(.theme-lux) body {
@@ -249,19 +252,17 @@ html[data-hero-overlay] .lux-header:not([data-solid]) .lux-header-bar {
   backdrop-filter: none;
 }
 
-/* Shutter footer (desktop): the page scrolls up like a shutter and uncovers a full-screen footer
-   fixed behind it; once it is mostly uncovered the header slides away (ShutterWatcher sets
-   data-footer-open), so the footer has the whole screen. On phones the footer is taller than the
-   screen, so it stays in the normal flow. */
-.lux-shutter-space { display: none; }
+/* Shutter footer (desktop): the end of the page holds still (sticky, with --page-stick set by
+   ShutterWatcher to "viewport height minus page height") while the full-screen footer slides up over
+   it. Once the footer mostly covers the screen the header slides away (data-footer-open). On phones
+   the footer is taller than the screen, so it scrolls normally. */
 .lux-header { transition: transform 0.7s var(--lux-ease-out); }
 @media (min-width: 1024px) and (min-height: 500px) {
-  .lux-shutter-space { display: block; height: 100svh; flex-shrink: 0; }
-  .lux-shutter { position: fixed; inset: auto 0 0 0; z-index: 0; height: 100svh; }
-  .lux-shutter > footer { height: 100%; }
+  .lux-page { position: sticky; top: var(--page-stick, 0px); }
+  .lux-shutter { position: relative; z-index: 10; }
+  .lux-shutter > footer { min-height: 100svh; box-shadow: 0 -30px 60px -30px rgb(15 13 11 / 0.35); }
   /* Spacing shrinks on short screens (laptops at 125-150% scaling) so everything fits. */
   .lux-shutter .lux-footer-main { padding-top: clamp(1.5rem, 11svh, 7rem); padding-bottom: clamp(1rem, 4svh, 3rem); }
   .lux-shutter .lux-footer-bar > div { padding-block: clamp(0.9rem, 3svh, 2rem); }
-  .lux-page { box-shadow: 0 40px 60px -30px rgb(15 13 11 / 0.35); } /* the shutter's edge */
   html[data-footer-open] .lux-header { transform: translateY(-100%); }
 }
