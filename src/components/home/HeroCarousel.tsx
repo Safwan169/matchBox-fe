@@ -65,7 +65,7 @@ export function HeroCarousel({ slides, overlay }: { slides: HeroSlide[]; overlay
 
   return (
     <section
-      className={`relative flex min-h-[560px] items-end overflow-hidden bg-lux-ink text-lux-ivory ${overlay ? "-mt-(--header-h) h-[100svh]" : "h-[80svh]"}`}
+      className={`relative grid overflow-hidden bg-lux-ink text-lux-ivory ${overlay ? "-mt-(--header-h) min-h-[100svh]" : "min-h-[80svh]"}`}
       data-header-overlay={overlay ? "" : undefined}
       role="region"
       aria-roledescription="carousel"
@@ -81,7 +81,7 @@ export function HeroCarousel({ slides, overlay }: { slides: HeroSlide[]; overlay
         return (
           <div
             key={s.id}
-            className={`absolute inset-0 transition-opacity duration-[1400ms] ease-in-out ${active ? "opacity-100" : "opacity-0"}`}
+            className={`relative col-start-1 row-start-1 flex flex-col transition-opacity duration-[1400ms] ease-in-out ${active ? "z-10 opacity-100" : "pointer-events-none opacity-0"}`}
             role="group"
             aria-roledescription="slide"
             aria-label={`${i + 1} of ${count}`}
@@ -89,7 +89,7 @@ export function HeroCarousel({ slides, overlay }: { slides: HeroSlide[]; overlay
             inert={!active}
           >
             {/* Re-keyed when it becomes active, so the drift and text replay. */}
-            <div key={active ? `on-${index}` : "off"} className="absolute inset-0">
+            <div key={active ? `on-${index}` : "off"} className="relative flex flex-1 flex-col justify-end">
               <Image
                 src={builtIn ? s.image : assetUrl(s.image)}
                 alt={s.alt}
@@ -103,15 +103,16 @@ export function HeroCarousel({ slides, overlay }: { slides: HeroSlide[]; overlay
               <div className="absolute inset-0 bg-gradient-to-r from-lux-ink/70 to-transparent" />
 
               {s.showText && (
-                <div className="absolute inset-x-0 bottom-0">
-                  <div className="mx-auto w-full max-w-7xl px-6 pb-24 sm:px-8 sm:pb-28">
+                <div className="relative">
+                  {/* Top padding keeps the text clear of the fixed header on short screens. */}
+                  <div className={`mx-auto w-full max-w-7xl px-6 pb-24 sm:px-8 sm:pb-28 ${overlay ? "pt-[calc(var(--header-h)+2.5rem)]" : "pt-16"}`}>
                     {s.eyebrow && (
                       <p className="lux-up text-[10px] tracking-[0.35em] text-lux-brass-light uppercase" style={{ animationDelay: "300ms" }}>
                         {s.eyebrow}
                       </p>
                     )}
                     {/* The first slide carries the page's h1. */}
-                    <Heading level={i === 0 ? 1 : 2} className="mt-6 max-w-4xl font-serif text-[clamp(2.8rem,8vw,7rem)] leading-[0.98] font-light">
+                    <Heading level={i === 0 ? 1 : 2} className="mt-6 max-w-4xl font-serif text-[clamp(2.6rem,min(8vw,11svh),7rem)] leading-[0.98] font-light">
                       {[...s.title.split(" ").map((w) => ({ w, accent: false })), ...(s.accent ? [{ w: s.accent, accent: true }] : [])].map(({ w, accent }, wi) => (
                         <Fragment key={wi}>
                           {wi > 0 && " "}
@@ -140,7 +141,7 @@ export function HeroCarousel({ slides, overlay }: { slides: HeroSlide[]; overlay
                 </div>
               )}
               {!s.showText && s.link && (
-                <div className="absolute inset-x-0 bottom-24 flex justify-center">
+                <div className={`relative flex justify-center pb-24 ${overlay ? "pt-[calc(var(--header-h)+2.5rem)]" : "pt-16"}`}>
                   <Cta href={s.link}>{s.buttonText || "Discover"}</Cta>
                 </div>
               )}
@@ -150,7 +151,7 @@ export function HeroCarousel({ slides, overlay }: { slides: HeroSlide[]; overlay
       })}
 
       {count > 1 && (
-        <div className="absolute right-6 bottom-8 flex items-center gap-5 sm:right-8 sm:bottom-10">
+        <div className="absolute right-6 bottom-8 z-20 flex items-center gap-5 sm:right-8 sm:bottom-10">
           <span className="font-serif text-sm tracking-widest text-lux-ivory/80">
             {String(index + 1).padStart(2, "0")} <span className="text-lux-ivory/40">/ {String(count).padStart(2, "0")}</span>
           </span>
@@ -171,7 +172,7 @@ export function HeroCarousel({ slides, overlay }: { slides: HeroSlide[]; overlay
       )}
 
       {count < 2 && (
-        <div className="absolute bottom-8 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-3 sm:flex">
+        <div className="absolute bottom-8 left-1/2 z-20 hidden -translate-x-1/2 flex-col items-center gap-3 sm:flex">
           <span className="text-[9px] tracking-[0.35em] text-lux-ivory/60 uppercase">Scroll</span>
           <span className="relative h-12 w-px overflow-hidden bg-lux-ivory/15">
             <span className="lux-cue absolute inset-0 bg-lux-brass" />

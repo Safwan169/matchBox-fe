@@ -108,23 +108,24 @@ body {
 /* ---- Scroll reveals, toggled by <Reveal> (data-shown) ---- */
 :root { --lux-ease-out: cubic-bezier(0.16, 1, 0.3, 1); --lux-ease-wipe: cubic-bezier(0.77, 0, 0.175, 1); }
 
+/* The observed element stays in place (so it triggers on its real position); its inner wrapper moves. */
 /* "up": slides up from well below while fading in. */
-.lux-reveal {
+.lux-reveal > .lux-reveal-inner {
   opacity: 0;
   transform: translate3d(0, 90px, 0);
   transition: opacity 1s ease, transform 1.5s var(--lux-ease-out);
   transition-delay: var(--lux-delay, 0ms);
 }
-.lux-reveal[data-shown] { opacity: 1; transform: none; }
+.lux-reveal[data-shown] > .lux-reveal-inner { opacity: 1; transform: none; }
 
 /* "card": the card wipes upward out of a mask while rising; its photo settles from a zoom. */
-.lux-reveal-card {
+.lux-reveal-card > .lux-reveal-inner {
   transform: translate3d(0, 140px, 0);
   clip-path: inset(100% 0 0 0);
   transition: transform 1.6s var(--lux-ease-out), clip-path 1.5s var(--lux-ease-wipe);
   transition-delay: var(--lux-delay, 0ms);
 }
-.lux-reveal-card[data-shown] { transform: none; clip-path: inset(0 0 0 0); }
+.lux-reveal-card[data-shown] > .lux-reveal-inner { transform: none; clip-path: inset(0 0 0 0); }
 .lux-reveal-card .lux-card-media {
   transform: scale(1.3);
   transition: transform 2.2s var(--lux-ease-out);
@@ -151,7 +152,7 @@ body {
 
 @media (prefers-reduced-motion: reduce) {
   .lux-drift, .lux-rise, .lux-fade, .lux-cue, .lux-up { animation: none; }
-  .lux-reveal, .lux-reveal-card, .lux-reveal-card .lux-card-media, .lux-word {
+  .lux-reveal-inner, .lux-reveal-card .lux-card-media, .lux-word {
     opacity: 1;
     transform: none;
     clip-path: none;

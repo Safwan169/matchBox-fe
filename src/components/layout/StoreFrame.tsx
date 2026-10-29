@@ -49,7 +49,7 @@ export function StoreFrame({ children, mobileChrome = true }: { children: ReactN
       <RevealObserver />
       {/* Without JavaScript nothing would reveal, so show everything. */}
       <noscript>
-        <style>{".lux-reveal,.lux-reveal-card,.lux-reveal-card .lux-card-media,.lux-word{opacity:1!important;transform:none!important;clip-path:none!important}"}</style>
+        <style>{".lux-reveal-inner,.lux-reveal-card .lux-card-media,.lux-word{opacity:1!important;transform:none!important;clip-path:none!important}"}</style>
       </noscript>
     </div>
   );

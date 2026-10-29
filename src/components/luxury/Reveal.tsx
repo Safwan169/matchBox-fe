@@ -32,7 +32,7 @@ function splitWords(node: ReactNode, counter: { i: number }): ReactNode {
  * "text" makes each word rise one after another.
  *
  * Plain markup (no client JavaScript per element): one <RevealObserver> in the shop frame
- * watches every `[data-reveal]` element and sets `data-shown`.
+ * watches every `[data-reveal]` element and sets `data-shown` once 30% of it is visible.
  */
 export function Reveal({
   children,
@@ -49,11 +49,18 @@ export function Reveal({
   as?: ElementType;
   className?: string;
 }) {
+  // Text-level tags can't contain a <div>.
+  const Inner = typeof Tag === "string" && /^(p|h[1-6]|span|a|em|label|li)$/.test(Tag) ? "span" : "div";
   const style = { "--lux-delay": `${delay}ms`, ...(stagger !== undefined && { "--lux-stagger": `${stagger}ms` }) } as CSSProperties;
 
   return (
     <Tag data-reveal="" className={`${variantClass[variant]} ${className}`} style={style}>
-      {variant === "text" ? splitWords(children, { i: 0 }) : children}
+      {variant === "text" ? (
+        splitWords(children, { i: 0 })
+      ) : (
+        // The inner wrapper moves; the outer element stays put so the observer sees its real position.
+        <Inner className={`lux-reveal-inner block ${variant === "card" ? "h-full" : ""}`}>{children}</Inner>
+      )}
     </Tag>
   );
 }

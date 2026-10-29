@@ -12,12 +12,14 @@ export function RevealObserver() {
     const io = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
-          if (!entry.isIntersecting) continue;
+          // The first report can arrive below the threshold, so check the ratio too.
+          if (!entry.isIntersecting || entry.intersectionRatio < 0.3) continue;
           entry.target.setAttribute("data-shown", "");
           io.unobserve(entry.target);
         }
       },
-      { rootMargin: "0px 0px -12% 0px" },
+      // Start once 30% of the element is on screen (the element itself never moves; its inner wrapper does).
+      { threshold: 0.3 },
     );
 
     const observeWithin = (root: ParentNode) => {
