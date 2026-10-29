@@ -273,7 +273,7 @@ export async function Footer() {
         </div>
       </div>
 
-      <div className="relative border-t border-lux-ink/10">
+      <div className="lux-footer-bar relative border-t border-lux-ink/10">
         <div className="mx-auto flex max-w-7xl flex-col gap-4 px-6 py-8 text-xs font-light text-lux-stone sm:px-8 lg:flex-row lg:items-center lg:justify-between">
           <p>
             © {year} MatchBox. For adults aged 18 and over — please smoke

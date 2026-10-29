@@ -1,6 +1,7 @@
 import { Suspense, type ReactNode } from "react";
 import { FlameMark } from "@/components/luxury/icons";
 import { RevealObserver } from "@/components/luxury/RevealObserver";
+import { ShutterWatcher } from "@/components/luxury/ShutterWatcher";
 import { Footer } from "./Footer";
 import { Header } from "./Header";
 import { MobileNav } from "./MobileNav";
@@ -52,6 +53,7 @@ export function StoreFrame({ children, mobileChrome = true }: { children: ReactN
         <MobileNav />
       </Suspense>
       <RevealObserver />
+      <ShutterWatcher spacerId="footer-shutter" />
       {/* Without JavaScript nothing would reveal, so show everything. */}
       <noscript>
         <style>{".lux-reveal-inner,.lux-reveal-card .lux-card-media,.lux-word{opacity:1!important;transform:none!important;clip-path:none!important}"}</style>
