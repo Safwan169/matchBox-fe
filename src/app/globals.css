@@ -267,6 +267,181 @@ html[data-hero-overlay] .lux-header:not([data-solid]) .lux-header-bar {
   html[data-footer-open] .lux-header { transform: translateY(-100%); }
 }
 
+/* ---------- Admin workspace ----------
+   The admin uses the same quiet luxury palette as the shop, without the storefront chrome. */
+.admin-theme {
+  --brand-red: var(--lux-ink);
+  --brand-red-dark: var(--lux-coal);
+  --brand-cream: var(--lux-ivory);
+  --brand-charcoal: var(--lux-ink);
+  --brand-brown: var(--lux-stone);
+  --brand-flame: var(--lux-brass);
+  --brand-flame-light: var(--lux-linen);
+  --brand-wood: var(--lux-brass-light);
+  --background: var(--lux-ivory);
+  --foreground: var(--lux-ink);
+  --font-ultra: var(--font-lux-serif);
+  --font-body: var(--font-lux-sans);
+  --placeholder-bg: var(--lux-linen);
+  min-height: 100vh;
+  background: var(--lux-ivory);
+  color: var(--lux-ink);
+  font-family: var(--font-lux-sans), system-ui, sans-serif;
+  font-size: 15px;
+  font-weight: 400;
+}
+.admin-theme :is(.rounded, .rounded-sm, .rounded-md, .rounded-lg, .rounded-xl, .rounded-full) {
+  border-radius: 0;
+}
+.admin-theme :is(button, input, select, textarea) { font: inherit; }
+.admin-theme :is(button, a, select, input[type="checkbox"], input[type="radio"]) { accent-color: var(--lux-ink); }
+.admin-theme a { text-decoration-thickness: 1px; text-underline-offset: 3px; }
+.admin-theme .admin-topbar {
+  border-bottom: 1px solid color-mix(in srgb, var(--lux-ink) 12%, transparent);
+  background: color-mix(in srgb, var(--lux-ivory) 96%, transparent);
+}
+.admin-theme .admin-wordmark {
+  color: var(--lux-ink);
+  font-family: var(--font-lux-serif), Georgia, serif;
+  font-size: 1.55rem;
+  font-weight: 400;
+  letter-spacing: 0.3em;
+  line-height: 1;
+}
+.admin-theme .admin-topbar-link,
+.admin-theme .admin-account-link {
+  font-size: 0.8125rem;
+  color: var(--lux-stone);
+  transition: color 250ms ease;
+}
+.admin-theme .admin-topbar-link:hover,
+.admin-theme .admin-account-link:hover { color: var(--lux-ink); }
+.admin-theme .admin-account-mark { color: var(--lux-ink); }
+.admin-theme .admin-sidebar { scrollbar-width: thin; scrollbar-color: var(--lux-linen) transparent; }
+.admin-theme .admin-nav-link {
+  min-height: 2.75rem;
+  font-size: 0.9375rem;
+  font-weight: 400;
+  text-decoration: none;
+}
+.admin-theme .admin-nav-icon { width: 1.125rem; height: 1.125rem; }
+.admin-theme .admin-nav-group > p,
+.admin-theme .admin-sidebar > div > p:first-child { font-size: 0.6875rem; }
+.admin-theme .admin-page-content > div { min-width: 0; }
+.admin-theme .admin-page-content h1.ui-title { margin-bottom: 0.15em; }
+.admin-theme .admin-page-content h2 { font-family: var(--font-lux-serif), Georgia, serif; font-weight: 300; }
+.admin-theme .ui-title {
+  color: var(--lux-ink);
+  font-family: var(--font-lux-serif), Georgia, serif;
+  font-size: clamp(2.4rem, 4vw, 3.25rem);
+  font-weight: 300;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+.admin-theme .ui-btn {
+  border-width: 1px;
+  border-radius: 0;
+  padding: 0.8rem 1.25rem;
+  font-family: var(--font-lux-sans), system-ui, sans-serif;
+  min-height: 2.75rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  transition: color 250ms ease, background-color 250ms ease, border-color 250ms ease;
+}
+.admin-theme .ui-btn.bg-red-700 { background-color: var(--lux-oxblood); }
+.admin-theme .ui-btn.bg-red-700:hover { background-color: #551713; }
+.admin-theme .ui-label {
+  margin-bottom: 0.45rem;
+  color: var(--lux-stone);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.admin-theme .ui-input {
+  min-height: 2.75rem;
+  border-radius: 0;
+  border-color: color-mix(in srgb, var(--lux-ink) 20%, transparent);
+  background: color-mix(in srgb, white 60%, transparent);
+  padding: 0.65rem 0.85rem;
+  color: var(--lux-ink);
+  font-size: 1rem;
+  font-weight: 400;
+}
+.admin-theme .ui-input::placeholder { color: var(--lux-stone); opacity: 0.8; }
+.admin-theme .ui-input:focus {
+  border-color: var(--lux-ink);
+  --tw-ring-color: color-mix(in srgb, var(--lux-brass) 35%, transparent);
+}
+.admin-theme .ui-card {
+  border-radius: 0;
+  border-color: color-mix(in srgb, var(--lux-ink) 12%, transparent);
+  background: color-mix(in srgb, white 55%, transparent);
+  padding: 1.25rem;
+}
+.admin-theme .admin-table-wrap { border-color: color-mix(in srgb, var(--lux-ink) 12%, transparent); }
+.admin-theme .admin-table { font-size: 0.875rem; }
+.admin-theme .admin-table tbody { font-size: 0.875rem; }
+.admin-theme .admin-table thead {
+  background: color-mix(in srgb, var(--lux-ink) 3%, transparent);
+  color: var(--lux-stone);
+}
+.admin-theme .admin-table thead th {
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.17em;
+}
+.admin-theme .admin-table tbody tr { border-color: color-mix(in srgb, var(--lux-ink) 9%, transparent); }
+.admin-theme .admin-table tbody tr:hover { background-color: color-mix(in srgb, var(--lux-ink) 3%, transparent); }
+.admin-theme .admin-table tbody td { padding-block: 0.85rem; }
+.admin-theme .admin-table-empty { color: var(--lux-stone); font-weight: 300; }
+.admin-theme .order-status-badge {
+  border: 1px solid color-mix(in srgb, var(--lux-ink) 18%, transparent);
+  background: transparent !important;
+  color: var(--lux-stone) !important;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  padding: 0.35rem 0.5rem;
+  text-transform: uppercase;
+}
+.admin-theme .order-status-badge::before {
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  margin-right: 6px;
+  background: currentColor;
+  content: "";
+}
+.admin-theme .order-status-badge[data-status="pending"] { border-color: color-mix(in srgb, var(--lux-brass) 55%, transparent); color: #80622e !important; }
+.admin-theme .order-status-badge[data-status="delivered"] { border-color: color-mix(in srgb, var(--lux-ink) 30%, transparent); color: var(--lux-ink) !important; }
+.admin-theme .order-status-badge[data-status="cancelled"] { opacity: 0.7; }
+.admin-theme .admin-table :is(.text-green-800, .text-blue-700, .text-blue-800, .text-indigo-800) { color: var(--lux-stone); }
+.admin-theme .admin-table .text-brand-red { color: var(--lux-ink); }
+.admin-theme .admin-table .text-green-800 { color: var(--lux-ink); }
+.admin-theme .admin-table .text-blue-700 { color: #80622e; }
+.admin-theme .text-red-700 { color: var(--lux-oxblood); }
+.admin-theme [role="alert"] { border-color: color-mix(in srgb, var(--lux-oxblood) 28%, transparent); }
+.admin-theme .admin-theme-success,
+.admin-theme .border-green-300 { border-color: color-mix(in srgb, var(--lux-brass) 50%, transparent); }
+.admin-theme .bg-green-50 { background: color-mix(in srgb, var(--lux-brass) 10%, white); }
+.admin-theme .text-green-800 { color: #5c492a; }
+.admin-theme .text-xs { font-size: 0.8125rem; line-height: 1.45; }
+.admin-theme [class~="text-[10px]"] { font-size: 0.75rem; line-height: 1.45; }
+.admin-theme [class~="text-[9px]"] { font-size: 0.6875rem; line-height: 1.45; }
+.admin-theme .admin-page-content table:not(.admin-table) { font-size: 0.875rem; }
+.admin-theme .admin-page-content table:not(.admin-table) thead { font-size: 0.75rem; }
+.admin-theme .admin-page-content table:not(.admin-table) tbody td { font-weight: 400; }
+.admin-theme .admin-page-content > div > p.text-sm { font-size: 1rem; line-height: 1.55; }
+
+@media (max-width: 767px) {
+  .admin-theme .admin-nav { scrollbar-width: none; }
+  .admin-theme .admin-nav::-webkit-scrollbar { display: none; }
+  .admin-theme .ui-card { padding: 1rem; }
+}
+
 /* Flame cursor (mouse only): the logo's golden flame, filled over things you can click, with a
    soft gold ring trailing it (LuxCursor). Text fields keep the text cursor. */
 @media (pointer: fine) {

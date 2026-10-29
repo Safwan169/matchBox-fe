@@ -30,7 +30,7 @@ export default function AdminCustomersPage() {
         <input className={`${tableInput} w-full max-w-md`} placeholder="Name, email or phone" value={search} onChange={(e) => setSearch(e.target.value)} aria-label="Search customers" />
       </form>
       <Alert>{error}</Alert>
-      <AdminTable head={["Name", "Email", "Phone", "Orders", "Joined"]} empty={!loading && data?.data.length === 0}>
+      <AdminTable head={["Name", "Email", "Phone", "Orders", "Joined"]} loading={loading} empty={!loading && data?.data.length === 0}>
         {data?.data.map((u) => (
           <tr key={u.id} className="hover:bg-brand-brown/5">
             <td className="px-4 py-3 font-semibold">{u.name}</td>

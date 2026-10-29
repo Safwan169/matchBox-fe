@@ -10,6 +10,6 @@ const styles: Record<OrderStatus, string> = {
 
 export function OrderStatusBadge({ status }: { status: OrderStatus }) {
   return (
-    <span className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-bold capitalize ${styles[status]}`}>{status}</span>
+    <span data-status={status} className={`order-status-badge inline-block rounded-full px-2.5 py-0.5 text-xs font-bold capitalize ${styles[status]}`}>{status}</span>
   );
 }

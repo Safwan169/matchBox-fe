@@ -151,12 +151,18 @@ export interface HomeSection {
 /** Public hero banner (GET /promotions). */
 export interface Promotion {
   id: string;
+  kind: "brand" | "promotion";
+  eyebrow: string;
   title: string;
+  accent: string;
   subtitle: string;
   image: string;
   buttonText: string;
   link: string;
   showText: boolean;
+  textColor: "ivory" | "brass" | "ink";
+  eyebrowColor: "ivory" | "brass" | "ink";
+  accentColor: "ivory" | "brass" | "ink";
 }
 
 export interface StoreSettings {

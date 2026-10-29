@@ -5,7 +5,7 @@ import { useState, type FormEvent } from "react";
 import { AdminTable } from "@/components/admin/AdminTable";
 import { useAdminApi } from "@/components/admin/AdminShell";
 import { ImageUploader } from "@/components/admin/ImageUploader";
-import { Alert, Button, Card, Field, PageTitle, errorMessage } from "@/components/ui";
+import { Alert, Button, Card, Field, PageTitle, Select, TextArea, errorMessage } from "@/components/ui";
 import type { AdminPromotion } from "@/lib/admin-types";
 import { api } from "@/lib/api";
 import { assetUrl, isUpload } from "@/lib/assets";
@@ -26,6 +26,7 @@ export default function AdminPromotionsPage() {
   const now = Date.now(); // eslint-disable-line react-hooks/purity -- display-only status, recomputed on render
 
   async function remove(p: AdminPromotion) {
+    if (p.kind === "brand") return;
     if (!confirm(`Delete promotion "${p.title}"?`)) return;
     try {
       await api(`/admin/promotions/${p.id}`, { method: "DELETE" });
@@ -40,30 +41,32 @@ export default function AdminPromotionsPage() {
     <div className="space-y-4">
       <PageTitle>Promotions</PageTitle>
       <p className="text-sm text-brand-brown">
-        Banners in the home page hero. They rotate automatically; with none live, the MatchBox cover is shown.
+        The brand hero is the first slide; your scheduled promotions follow it. Edit either slide’s top line, title breaks and text color here.
       </p>
       <Alert>{error || actionError}</Alert>
 
-      <div className="grid gap-6 2xl:grid-cols-[1fr_400px]">
-        <AdminTable head={["Banner", "Title", "Order", "Status", ""]} empty={!loading && data?.data.length === 0}>
+      <div className="grid gap-6 2xl:grid-cols-[minmax(0,1fr)_minmax(360px,400px)]">
+        <AdminTable head={["Type", "Banner", "Title", "Order", "Status", ""]} loading={loading} empty={!loading && data?.data.length === 0}>
           {data?.data.map((p) => {
             const status = scheduleStatus(p, now);
             return (
               <tr key={p.id} className={editing?.id === p.id ? "bg-brand-flame-light/40" : "hover:bg-brand-brown/5"}>
+                <td className="px-4 py-3 whitespace-nowrap">{p.kind === "brand" ? "Brand hero" : "Promotion"}</td>
                 <td className="px-4 py-2">
                   <div className="relative aspect-[1640/624] w-32 overflow-hidden rounded bg-brand-red">
                     <Image src={assetUrl(p.image)} alt="" fill sizes="128px" className="object-cover" unoptimized={!isUpload(p.image)} />
                   </div>
                 </td>
                 <td className="px-4 py-3">
-                  <p className="font-semibold">{p.title}</p>
-                  {p.subtitle && <p className="text-xs text-brand-brown">{p.subtitle}</p>}
+                  {p.eyebrow && <p className="text-xs text-brand-brown">{p.eyebrow}</p>}
+                  <p className="font-semibold whitespace-pre-line">{p.title}{p.accent && ` ${p.accent}`}</p>
+                  {p.subtitle && <p className="text-xs whitespace-pre-line text-brand-brown">{p.subtitle}</p>}
                 </td>
                 <td className="px-4 py-3">{p.sortOrder}</td>
                 <td className={`px-4 py-3 text-xs font-semibold ${status.className}`}>{status.label}</td>
                 <td className="px-4 py-3 text-right whitespace-nowrap">
                   <button onClick={() => setEditing(p)} className="font-semibold text-brand-red hover:underline">Edit</button>
-                  <button onClick={() => remove(p)} className="ml-3 text-brand-brown hover:text-red-700">Delete</button>
+                  {p.kind !== "brand" && <button onClick={() => remove(p)} className="ml-3 text-brand-brown hover:text-red-700">Delete</button>}
                 </td>
               </tr>
             );
@@ -106,11 +109,16 @@ function PromotionForm({ promotion, onDone }: { promotion: AdminPromotion | null
     const f = new FormData(e.currentTarget);
     const body = {
       image: images[0],
+      eyebrow: f.get("eyebrow"),
       title: f.get("title"),
+      accent: f.get("accent"),
       subtitle: f.get("subtitle"),
       buttonText: f.get("buttonText"),
       link: String(f.get("link") ?? "").trim(),
       showText: f.get("showText") === "on",
+      textColor: f.get("textColor"),
+      eyebrowColor: f.get("eyebrowColor"),
+      accentColor: f.get("accentColor"),
       isActive: f.get("isActive") === "on",
       sortOrder: Number(f.get("sortOrder") || 0),
       startsAt: fromLocalInput(f.get("startsAt")),
@@ -146,8 +154,25 @@ function PromotionForm({ promotion, onDone }: { promotion: AdminPromotion | null
             <Image src={assetUrl(images[0])} alt="Banner preview" fill sizes="400px" className="object-cover" unoptimized={!isUpload(images[0])} />
           </div>
         )}
-        <Field label="Title" name="title" defaultValue={promotion?.title} required minLength={2} maxLength={100} hint="Also used as the image description." />
-        <Field label="Subtitle" name="subtitle" defaultValue={promotion?.subtitle} maxLength={200} placeholder="e.g. 20% off all lighters this week" />
+        <Field label="Top line / eyebrow" name="eyebrow" defaultValue={promotion?.eyebrow} maxLength={80} placeholder="e.g. MATCHBOX · DHAKA" />
+        <Select label="Top line color" name="eyebrowColor" defaultValue={promotion?.eyebrowColor ?? "brass"}>
+          <option value="brass">Brass</option>
+          <option value="ivory">Ivory</option>
+          <option value="ink">Ink</option>
+        </Select>
+        <TextArea label="Title" name="title" rows={3} defaultValue={promotion?.title} required minLength={2} maxLength={100} hint="Press Enter wherever you want the title to break onto a new line. Also used as image description." />
+        <Field label="Accent word (optional)" name="accent" defaultValue={promotion?.accent} maxLength={40} placeholder="e.g. flame." />
+        <Select label="Accent word color" name="accentColor" defaultValue={promotion?.accentColor ?? "brass"}>
+          <option value="brass">Brass</option>
+          <option value="ivory">Ivory</option>
+          <option value="ink">Ink</option>
+        </Select>
+        <TextArea label="Subtitle" name="subtitle" rows={3} defaultValue={promotion?.subtitle} maxLength={200} placeholder="e.g. 20% off all lighters this week" hint="Press Enter to add line breaks." />
+        <Select label="Text color" name="textColor" defaultValue={promotion?.textColor ?? "ivory"}>
+          <option value="ivory">Ivory</option>
+          <option value="brass">Brass</option>
+          <option value="ink">Ink (for light images)</option>
+        </Select>
         <div className="grid gap-4 sm:grid-cols-2">
           <Field label="Button text" name="buttonText" defaultValue={promotion?.buttonText} maxLength={40} placeholder="Shop now" />
           <Field label="Button link" name="link" defaultValue={promotion?.link} maxLength={500} placeholder="/categories/lighters" />

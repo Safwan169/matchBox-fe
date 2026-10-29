@@ -3,32 +3,35 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { AdminUserMenu } from "@/components/admin/AdminUserMenu";
-import { Logo } from "@/components/layout/Logo";
 
 export const metadata: Metadata = { title: "Admin", robots: { index: false, follow: false } };
 
 // Admin has its own simple top bar instead of the shop's header and footer.
 export default function AdminLayout({ children }: LayoutProps<"/admin">) {
   return (
-    <>
-      <header className="sticky top-0 z-30 bg-brand-red text-brand-cream shadow-md">
-        <div className="mx-auto flex max-w-7xl items-center gap-x-4 px-4 py-2.5">
-          <Logo />
-          <span className="rounded bg-brand-flame px-2 py-0.5 text-sm font-bold text-brand-charcoal">Admin</span>
-          <nav aria-label="Admin account" className="ml-auto flex items-center gap-4 text-sm font-semibold">
-            <Link href="/" target="_blank" className="hover:text-brand-flame">
-              View store ↗
+    <div className="admin-theme min-h-screen">
+      <header className="admin-topbar sticky top-0 z-30">
+        <div className="mx-auto flex min-h-16 max-w-[1600px] items-center gap-4 px-4 sm:px-6 lg:px-8">
+          <Link href="/admin" className="admin-wordmark shrink-0" aria-label="MatchBox admin dashboard">
+            MATCHBOX
+          </Link>
+          <span className="admin-topbar-label hidden border-l border-lux-ink/15 pl-4 text-[10px] tracking-[0.24em] text-lux-stone uppercase sm:block">
+            Store administration
+          </span>
+          <nav aria-label="Admin account" className="ml-auto flex items-center gap-3 sm:gap-6">
+            <Link href="/" target="_blank" className="admin-topbar-link hidden text-[10px] tracking-[0.17em] uppercase sm:inline-flex">
+              View store <span aria-hidden="true">↗</span>
             </Link>
             <AdminUserMenu />
           </nav>
         </div>
       </header>
-      <main className="flex min-h-screen flex-1 flex-col">
+      <main className="min-h-[calc(100vh-4rem)]">
         {/* AdminShell reads the URL (usePathname), which must sit inside Suspense. */}
-        <Suspense fallback={<p className="mx-auto w-full max-w-6xl px-4 py-12 text-brand-brown">Loading…</p>}>
+        <Suspense fallback={<p role="status" className="mx-auto max-w-[1600px] px-4 py-12 text-sm text-lux-stone sm:px-6 lg:px-8">Loading administration…</p>}>
           <AdminShell>{children}</AdminShell>
         </Suspense>
       </main>
-    </>
+    </div>
   );
 }

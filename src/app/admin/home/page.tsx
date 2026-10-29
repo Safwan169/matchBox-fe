@@ -123,8 +123,8 @@ export default function AdminHomePage() {
           >
             <div className={`flex flex-wrap items-center gap-3 ${s.isActive ? "" : "opacity-60"}`}>
               <div className="flex flex-col">
-                <button onClick={() => move(i, -1)} disabled={i === 0} aria-label="Move up" className="px-2 leading-none font-bold hover:text-brand-red disabled:opacity-25">▲</button>
-                <button onClick={() => move(i, 1)} disabled={i === sections.length - 1} aria-label="Move down" className="px-2 leading-none font-bold hover:text-brand-red disabled:opacity-25">▼</button>
+                <button onClick={() => move(i, -1)} disabled={i === 0} aria-label="Move up" className="px-2 leading-none font-light hover:text-brand-red disabled:opacity-25">↑</button>
+                <button onClick={() => move(i, 1)} disabled={i === sections.length - 1} aria-label="Move down" className="px-2 leading-none font-light hover:text-brand-red disabled:opacity-25">↓</button>
               </div>
               <div className="min-w-0 flex-1">
                 <p className="font-semibold">

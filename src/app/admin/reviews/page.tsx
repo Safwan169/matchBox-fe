@@ -53,7 +53,7 @@ export default function AdminReviewsPage() {
       </select>
       <Alert>{error || actionError}</Alert>
 
-      <AdminTable head={["Product", "Customer", "Rating", "Review", "Date", "Status", ""]} empty={!loading && data?.data.length === 0}>
+      <AdminTable head={["Product", "Customer", "Rating", "Review", "Date", "Status", ""]} loading={loading} empty={!loading && data?.data.length === 0}>
         {data?.data.map((r) => (
           <tr key={r.id} className="align-top hover:bg-brand-brown/5">
             <td className="px-4 py-3">

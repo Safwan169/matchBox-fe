@@ -54,7 +54,7 @@ export default function AdminProductsPage() {
       </form>
       <Alert>{error}</Alert>
 
-      <AdminTable head={["", "Product", "Category", "Price", "Stock", "Status"]} empty={!loading && data?.data.length === 0}>
+      <AdminTable head={["", "Product", "Category", "Price", "Stock", "Status"]} loading={loading} empty={!loading && data?.data.length === 0}>
         {data?.data.map((p) => (
           <tr key={p.id} className="hover:bg-brand-brown/5">
             <td className="w-14 px-4 py-2">

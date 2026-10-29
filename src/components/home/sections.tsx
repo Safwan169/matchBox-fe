@@ -139,30 +139,43 @@ export function HomeSectionView({ section, first = false }: { section: HomeSecti
 const BRAND_SLIDE: HeroSlide = {
   id: "brand",
   image: "/images/hero-flame.jpg",
-  alt: "A lighter flame glowing in the dark",
   eyebrow: "MatchBox · Dhaka",
+  alt: "A lighter flame glowing in the dark",
   title: "The quiet art of the",
   accent: "flame.",
   subtitle: "Lighters, tobacco and smoking accessories, chosen for their craft and delivered with discretion.",
   buttonText: "Explore the collection",
   link: "/products",
   showText: true,
+  textColor: "ivory",
+  eyebrowColor: "brass",
+  accentColor: "brass",
 };
 
 async function Hero({ overlay }: { overlay: boolean }) {
   const promotions = await getPromotions();
-  // The brand slide always leads; promotions from Admin → Promotions follow it.
+  const brand = promotions.find((promotion) => promotion.kind === "brand");
   const slides: HeroSlide[] = [
-    BRAND_SLIDE,
-    ...promotions.map((p) => ({
+    brand
+      ? {
+          ...brand,
+          alt: brand.title,
+        }
+      : BRAND_SLIDE,
+    ...promotions.filter((promotion) => promotion.kind !== "brand").map((p) => ({
       id: p.id,
       image: p.image,
       alt: p.title,
+      eyebrow: p.eyebrow,
       title: p.title,
+      accent: p.accent,
       subtitle: p.subtitle,
       buttonText: p.buttonText,
       link: p.link,
       showText: p.showText,
+      textColor: p.textColor,
+      eyebrowColor: p.eyebrowColor,
+      accentColor: p.accentColor,
     })),
   ];
   return <HeroCarousel slides={slides} overlay={overlay} />;

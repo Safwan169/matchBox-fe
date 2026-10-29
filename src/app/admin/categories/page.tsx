@@ -30,7 +30,7 @@ export default function AdminCategoriesPage() {
       <PageTitle>Categories</PageTitle>
       <Alert>{error || actionError}</Alert>
       <div className="grid gap-6 xl:grid-cols-[1fr_340px]">
-        <AdminTable head={["Name", "Slug", "Order", "Products", "Status", ""]} empty={!loading && data?.data.length === 0}>
+        <AdminTable head={["Name", "Slug", "Order", "Products", "Status", ""]} loading={loading} empty={!loading && data?.data.length === 0}>
           {data?.data.map((c) => (
             <tr key={c.id} className={editing?.id === c.id ? "bg-brand-flame-light/40" : "hover:bg-brand-brown/5"}>
               <td className="px-4 py-3 font-semibold">{c.name}</td>

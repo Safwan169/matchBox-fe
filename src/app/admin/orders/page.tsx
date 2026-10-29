@@ -41,7 +41,7 @@ export default function AdminOrdersPage() {
       </form>
       <Alert>{error}</Alert>
 
-      <AdminTable head={["Order", "Date", "Customer", "Items", "Status", "Total"]} empty={!loading && data?.data.length === 0}>
+      <AdminTable head={["Order", "Date", "Customer", "Items", "Status", "Total"]} loading={loading} empty={!loading && data?.data.length === 0}>
         {data?.data.map((o) => (
           <tr key={o.id} className="hover:bg-brand-brown/5">
             <td className="px-4 py-3 font-mono">
