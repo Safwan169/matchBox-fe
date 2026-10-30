@@ -20,6 +20,7 @@ export interface Product {
   price: number; // poisha
   compareAtPrice: number | null;
   stock: number;
+  maxPerOrder: number | null; // per-order purchase limit; null = no product-specific limit
   images: string[];
   ageRestricted: boolean;
   isFeatured: boolean;

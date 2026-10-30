@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { ProductImage } from "@/components/product/ProductImage";
 import { QuantityInput } from "@/components/QuantityInput";
 import { Alert, Card, PageTitle, buttonClass } from "@/components/ui";
-import { useCart, type CartItem } from "@/context/CartContext";
+import { orderLimit, useCart, type CartItem } from "@/context/CartContext";
 import { apiGet } from "@/lib/api";
 import { formatPrice } from "@/lib/format";
 import type { ApiItem, Product } from "@/lib/types";
@@ -34,10 +34,13 @@ export default function CartPage() {
           changes.push(`${item.name} is no longer available and was removed.`);
           continue;
         }
-        const quantity = Math.min(item.quantity, product.stock);
+        const limit = orderLimit(product);
+        const quantity = Math.min(item.quantity, limit);
         if (product.price !== item.price) changes.push(`The price of ${item.name} changed.`);
-        if (quantity < item.quantity) changes.push(`Only ${product.stock} of ${item.name} available.`);
-        next.push({ ...item, productId: product.id, slug: product.slug, name: product.name, price: product.price, stock: product.stock, image: product.images[0] ?? null, quantity });
+        if (quantity < item.quantity) {
+          changes.push(limit < product.stock ? `${item.name} is limited to ${limit} per order.` : `Only ${product.stock} of ${item.name} available.`);
+        }
+        next.push({ ...item, productId: product.id, slug: product.slug, name: product.name, price: product.price, stock: product.stock, maxPerOrder: product.maxPerOrder, image: product.images[0] ?? null, quantity });
       }
       replace(next);
       setNotice(changes.join(" "));
@@ -82,7 +85,7 @@ export default function CartPage() {
                   <p className="text-sm text-brand-brown">{formatPrice(item.price)} each</p>
                 </div>
                 <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-                  <QuantityInput value={item.quantity} max={item.stock} onChange={(q) => setQuantity(item.productId, q)} />
+                  <QuantityInput value={item.quantity} max={orderLimit(item)} onChange={(q) => setQuantity(item.productId, q)} />
                   <p className="font-bold sm:w-24 sm:text-right">{formatPrice(item.price * item.quantity)}</p>
                   <button onClick={() => remove(item.productId)} className="text-sm text-brand-red hover:underline" aria-label={`Remove ${item.name}`}>
                     Remove

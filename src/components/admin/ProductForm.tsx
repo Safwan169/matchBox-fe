@@ -26,6 +26,7 @@ export function ProductForm({ product }: { product?: Product }) {
     e.preventDefault();
     const f = new FormData(e.currentTarget);
     const compareAt = String(f.get("compareAtPrice") ?? "").trim();
+    const maxPerOrder = String(f.get("maxPerOrder") ?? "").trim();
     const slug = String(f.get("slug") ?? "").trim();
 
     const body = {
@@ -37,6 +38,7 @@ export function ProductForm({ product }: { product?: Product }) {
       price: toPoisha(String(f.get("price"))),
       compareAtPrice: compareAt ? toPoisha(compareAt) : null,
       stock: Number(f.get("stock")),
+      maxPerOrder: maxPerOrder ? Number(maxPerOrder) : null,
       images,
       isActive: f.get("isActive") === "on",
       isFeatured: f.get("isFeatured") === "on",
@@ -101,6 +103,7 @@ export function ProductForm({ product }: { product?: Product }) {
           <Field label="Price (৳)" name="price" type="number" step="0.01" min="0" required defaultValue={toTaka(product?.price)} />
           <Field label="Compare-at price (৳)" name="compareAtPrice" type="number" step="0.01" min="0" defaultValue={toTaka(product?.compareAtPrice)} hint="Original price, shown crossed out when higher." />
           <Field label="Stock" name="stock" type="number" step="1" min="0" required defaultValue={product?.stock ?? 0} />
+          <Field label="Max per order" name="maxPerOrder" type="number" step="1" min="1" max="50" defaultValue={product?.maxPerOrder ?? ""} hint="Most one customer can buy in a single order. Leave empty to use the store limit (50)." />
         </Card>
         <Card className="space-y-3 text-sm">
           <Toggle name="isActive" label="Visible in store" defaultChecked={product?.isActive ?? true} />

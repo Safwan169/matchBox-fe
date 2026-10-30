@@ -12,6 +12,7 @@ export interface CartItem {
   image: string | null;
   price: number; // poisha, as last seen; the server re-prices at checkout
   stock: number;
+  maxPerOrder?: number | null; // missing on carts saved before the limit existed
   quantity: number;
 }
 
@@ -29,7 +30,11 @@ interface CartContextValue {
 
 const CartContext = createContext<CartContextValue | null>(null);
 
-const clamp = (qty: number, stock: number) => Math.max(1, Math.min(Math.floor(qty), stock));
+/** Most of one product a single order may hold: its stock, capped by its per-order limit. */
+export const orderLimit = (item: { stock: number; maxPerOrder?: number | null }) =>
+  item.maxPerOrder ? Math.min(item.stock, item.maxPerOrder) : item.stock;
+
+const clamp = (qty: number, max: number) => Math.max(1, Math.min(Math.floor(qty), max));
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
@@ -57,7 +62,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       const existing = prev.find((i) => i.productId === product.id);
       if (existing) {
         return prev.map((i) =>
-          i.productId === product.id ? { ...i, stock: product.stock, price: product.price, quantity: clamp(i.quantity + quantity, product.stock) } : i,
+          i.productId === product.id ? { ...i, stock: product.stock, maxPerOrder: product.maxPerOrder, price: product.price, quantity: clamp(i.quantity + quantity, orderLimit(product)) } : i,
         );
       }
       return [
@@ -69,14 +74,15 @@ export function CartProvider({ children }: { children: ReactNode }) {
           image: product.images[0] ?? null,
           price: product.price,
           stock: product.stock,
-          quantity: clamp(quantity, product.stock),
+          maxPerOrder: product.maxPerOrder,
+          quantity: clamp(quantity, orderLimit(product)),
         },
       ];
     });
   }, []);
 
   const setQuantity = useCallback((productId: string, quantity: number) => {
-    setItems((prev) => prev.map((i) => (i.productId === productId ? { ...i, quantity: clamp(quantity, i.stock) } : i)));
+    setItems((prev) => prev.map((i) => (i.productId === productId ? { ...i, quantity: clamp(quantity, orderLimit(i)) } : i)));
   }, []);
 
   const remove = useCallback((productId: string) => {
