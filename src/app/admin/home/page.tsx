@@ -7,6 +7,7 @@ import { ImageUploader } from "@/components/admin/ImageUploader";
 import { Alert, Button, Card, Field, PageTitle, Select, TextArea, buttonClass, errorMessage } from "@/components/ui";
 import type { AdminCategory, AdminHomeSection } from "@/lib/admin-types";
 import { api } from "@/lib/api";
+import { notifyAdded } from "@/lib/alerts";
 import type { ApiItem, HomeSectionType } from "@/lib/types";
 
 const TYPES: { type: HomeSectionType; label: string; help: string }[] = [
@@ -216,7 +217,10 @@ function SectionForm({
     setError("");
     try {
       if (section) await api(`/admin/home-sections/${section.id}`, { method: "PATCH", body });
-      else await api("/admin/home-sections", { method: "POST", body });
+      else {
+        await api("/admin/home-sections", { method: "POST", body });
+        void notifyAdded("Section added");
+      }
       onDone();
     } catch (err) {
       setError(errorMessage(err));

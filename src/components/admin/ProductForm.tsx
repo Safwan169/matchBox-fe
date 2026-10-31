@@ -6,6 +6,7 @@ import { useState, type FormEvent } from "react";
 import { Alert, Button, Card, Field, Select, TextArea, errorMessage } from "@/components/ui";
 import type { AdminCategory } from "@/lib/admin-types";
 import { api } from "@/lib/api";
+import { notifyAdded } from "@/lib/alerts";
 import type { ApiItem, Product } from "@/lib/types";
 import { useAdminApi } from "@/components/admin/AdminShell";
 import { ImageUploader } from "./ImageUploader";
@@ -55,7 +56,8 @@ export function ProductForm({ product }: { product?: Product }) {
         setSaved(true);
       } else {
         const { data } = await api<ApiItem<Product>>("/admin/products", { method: "POST", body });
-        router.replace(`/admin/products/${data.id}?created=1`);
+        router.replace("/admin/products");
+        void notifyAdded("Product added", `"${data.name}" is now in your catalogue.`);
       }
     } catch (err) {
       setError(errorMessage(err));

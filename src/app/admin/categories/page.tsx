@@ -5,6 +5,7 @@ import { AdminTable } from "@/components/admin/AdminTable";
 import { Alert, Button, Card, Field, PageTitle, errorMessage } from "@/components/ui";
 import type { AdminCategory } from "@/lib/admin-types";
 import { api } from "@/lib/api";
+import { notifyAdded } from "@/lib/alerts";
 import type { ApiItem } from "@/lib/types";
 import { useAdminApi } from "@/components/admin/AdminShell";
 
@@ -83,7 +84,10 @@ function CategoryForm({ category, onDone }: { category: AdminCategory | null; on
     setError("");
     try {
       if (category) await api(`/admin/categories/${category.id}`, { method: "PATCH", body });
-      else await api("/admin/categories", { method: "POST", body });
+      else {
+        await api("/admin/categories", { method: "POST", body });
+        void notifyAdded("Category added");
+      }
       formEl.reset();
       onDone();
     } catch (err) {

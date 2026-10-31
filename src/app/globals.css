@@ -467,3 +467,48 @@ html[data-hero-overlay] .lux-header:not([data-solid]) .lux-header-bar {
 }
 .lux-cursor-ring[data-visible] { opacity: 1; scale: 1; }
 .lux-cursor-ring[data-visible][data-hover] { scale: 1.6; background: color-mix(in srgb, var(--lux-brass) 10%, transparent); }
+
+/* SweetAlert2 popups (lib/alerts.ts), in the admin look: square, hairline, no shadow. */
+.swal2-popup.mb-swal-popup {
+  border: 1px solid rgb(15 13 11 / 0.1);
+  border-radius: 0;
+  box-shadow: none;
+  background: #f5f0e8;
+  color: #0f0d0b;
+  font-family: var(--font-lux-sans), system-ui, sans-serif;
+  padding: 2rem 1.5rem 1.75rem;
+}
+.swal2-container.swal2-backdrop-show:has(.mb-swal-popup) {
+  background: rgb(15 13 11 / 0.35);
+}
+.mb-swal-popup .mb-swal-title {
+  font-family: var(--font-lux-serif), serif;
+  font-size: 2rem;
+  font-weight: 300;
+  color: #0f0d0b;
+}
+.mb-swal-popup .mb-swal-text {
+  font-size: 15px;
+  color: #6b6257;
+}
+.mb-swal-popup .mb-swal-button {
+  border-radius: 0;
+  background: #0f0d0b;
+  color: #f5f0e8;
+  padding: 0.7rem 2.25rem;
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+.mb-swal-popup .mb-swal-button:hover {
+  background: #1a1714;
+}
+.mb-swal-popup .mb-swal-button:focus-visible {
+  outline: 2px solid #b8955a;
+  outline-offset: 2px;
+}
+.mb-swal-popup .mb-swal-progress {
+  background: #b8955a;
+}

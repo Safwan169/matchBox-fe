@@ -8,6 +8,7 @@ import { ImageUploader } from "@/components/admin/ImageUploader";
 import { Alert, Button, Card, Field, PageTitle, Select, TextArea, errorMessage } from "@/components/ui";
 import type { AdminPromotion } from "@/lib/admin-types";
 import { api } from "@/lib/api";
+import { notifyAdded } from "@/lib/alerts";
 import { assetUrl, isUpload } from "@/lib/assets";
 import { formatDate } from "@/lib/format";
 import type { ApiItem } from "@/lib/types";
@@ -128,7 +129,10 @@ function PromotionForm({ promotion, onDone }: { promotion: AdminPromotion | null
     setError("");
     try {
       if (promotion) await api(`/admin/promotions/${promotion.id}`, { method: "PATCH", body });
-      else await api("/admin/promotions", { method: "POST", body });
+      else {
+        await api("/admin/promotions", { method: "POST", body });
+        void notifyAdded("Promotion added");
+      }
       onDone();
     } catch (err) {
       setError(errorMessage(err));
