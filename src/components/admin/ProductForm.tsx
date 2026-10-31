@@ -26,6 +26,7 @@ export function ProductForm({ product }: { product?: Product }) {
     e.preventDefault();
     const f = new FormData(e.currentTarget);
     const compareAt = String(f.get("compareAtPrice") ?? "").trim();
+    const price = String(f.get("price") ?? "").trim();
     const maxPerOrder = String(f.get("maxPerOrder") ?? "").trim();
     const slug = String(f.get("slug") ?? "").trim();
 
@@ -35,7 +36,7 @@ export function ProductForm({ product }: { product?: Product }) {
       categoryId: f.get("categoryId"),
       brand: f.get("brand"),
       description: f.get("description"),
-      price: toPoisha(String(f.get("price"))),
+      price: price ? toPoisha(price) : null,
       compareAtPrice: compareAt ? toPoisha(compareAt) : null,
       stock: Number(f.get("stock")),
       maxPerOrder: maxPerOrder ? Number(maxPerOrder) : null,
@@ -100,7 +101,7 @@ export function ProductForm({ product }: { product?: Product }) {
 
       <div className="space-y-6">
         <Card className="space-y-4">
-          <Field label="Price (৳)" name="price" type="number" step="0.01" min="0" required defaultValue={toTaka(product?.price)} />
+          <Field label="Price (৳)" name="price" type="number" step="0.01" min="0" defaultValue={toTaka(product?.price)} hint={`Leave empty to show "Price on request". The product can't be ordered until it has a price.`} />
           <Field label="Compare-at price (৳)" name="compareAtPrice" type="number" step="0.01" min="0" defaultValue={toTaka(product?.compareAtPrice)} hint="Original price, shown crossed out when higher." />
           <Field label="Stock" name="stock" type="number" step="1" min="0" required defaultValue={product?.stock ?? 0} />
           <Field label="Max per order" name="maxPerOrder" type="number" step="1" min="1" max="50" defaultValue={product?.maxPerOrder ?? ""} hint="Most one customer can buy in a single order. Leave empty to use the store limit (50)." />

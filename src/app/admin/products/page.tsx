@@ -67,7 +67,7 @@ export default function AdminProductsPage() {
               {p.brand && <span className="block text-xs text-brand-brown">{p.brand}</span>}
             </td>
             <td className="px-4 py-3">{categoryName.get(p.categoryId) ?? "—"}</td>
-            <td className="px-4 py-3 whitespace-nowrap">{formatPrice(p.price)}</td>
+            <td className="px-4 py-3 whitespace-nowrap">{p.price === null ? "—" : formatPrice(p.price)}</td>
             <td className={`px-4 py-3 font-semibold ${p.stock <= 5 ? "text-red-700" : ""}`}>{p.stock}</td>
             <td className="px-4 py-3 text-xs font-semibold">
               {p.isActive ? <span className="text-green-800">Visible</span> : <span className="text-brand-brown">Hidden</span>}

@@ -57,12 +57,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, [items, ready]);
 
   const add = useCallback((product: Product, quantity = 1) => {
-    if (product.stock <= 0) return;
+    const price = product.price;
+    if (product.stock <= 0 || price === null) return;
     setItems((prev) => {
       const existing = prev.find((i) => i.productId === product.id);
       if (existing) {
         return prev.map((i) =>
-          i.productId === product.id ? { ...i, stock: product.stock, maxPerOrder: product.maxPerOrder, price: product.price, quantity: clamp(i.quantity + quantity, orderLimit(product)) } : i,
+          i.productId === product.id ? { ...i, stock: product.stock, maxPerOrder: product.maxPerOrder, price, quantity: clamp(i.quantity + quantity, orderLimit(product)) } : i,
         );
       }
       return [
@@ -72,7 +73,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
           slug: product.slug,
           name: product.name,
           image: product.images[0] ?? null,
-          price: product.price,
+          price,
           stock: product.stock,
           maxPerOrder: product.maxPerOrder,
           quantity: clamp(quantity, orderLimit(product)),

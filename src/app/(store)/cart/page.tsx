@@ -30,7 +30,7 @@ export default function CartPage() {
       const changes: string[] = [];
       const next: CartItem[] = [];
       for (const { item, product } of results) {
-        if (!product || product.stock <= 0) {
+        if (!product || product.stock <= 0 || product.price === null) {
           changes.push(`${item.name} is no longer available and was removed.`);
           continue;
         }

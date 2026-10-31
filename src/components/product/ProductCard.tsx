@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Reveal } from "@/components/luxury/Reveal";
-import { formatPrice } from "@/lib/format";
+import { formatPrice, PRICE_ON_REQUEST } from "@/lib/format";
 import type { Product } from "@/lib/types";
 import { AddToBagButton } from "./AddToBagButton";
 import { ProductImage } from "./ProductImage";
@@ -8,7 +8,8 @@ import { ProductImage } from "./ProductImage";
 /** Server-rendered card; only the "Add to bag" buttons are client components. */
 export function ProductCard({ product, eager = false }: { product: Product; eager?: boolean }) {
   const soldOut = product.stock <= 0;
-  const onSale = product.compareAtPrice != null && product.compareAtPrice > product.price;
+  const priced = product.price !== null;
+  const onSale = priced && product.compareAtPrice != null && product.compareAtPrice > product.price!;
 
   return (
     <article className="group">
@@ -27,7 +28,7 @@ export function ProductCard({ product, eager = false }: { product: Product; eage
           <span className="absolute top-3 left-3 bg-lux-ivory px-2.5 py-1 text-[9px] tracking-[0.25em] text-lux-oxblood uppercase">Offer</span>
         )}
         {soldOut && <span className="absolute top-3 left-3 bg-lux-ink px-2.5 py-1 text-[9px] tracking-[0.25em] text-lux-ivory uppercase">Sold out</span>}
-        {!soldOut && <AddToBagButton product={product} look="overlay" />}
+        {!soldOut && priced && <AddToBagButton product={product} look="overlay" />}
       </div>
       <div className="mt-4 space-y-1 text-center sm:mt-5 sm:space-y-1.5">
         {product.brand && <p className="text-[9px] tracking-[0.3em] text-lux-stone uppercase sm:text-[10px]">{product.brand}</p>}
@@ -37,7 +38,7 @@ export function ProductCard({ product, eager = false }: { product: Product; eage
           </Link>
         </h3>
         <p className="text-sm tracking-wide">
-          <span className={onSale ? "text-lux-oxblood" : ""}>{formatPrice(product.price)}</span>
+          <span className={onSale ? "text-lux-oxblood" : priced ? "" : "text-lux-stone"}>{priced ? formatPrice(product.price!) : PRICE_ON_REQUEST}</span>
           {onSale && <span className="ml-2 text-lux-stone line-through">{formatPrice(product.compareAtPrice!)}</span>}
         </p>
         {product.ratingCount > 0 && (
@@ -45,7 +46,7 @@ export function ProductCard({ product, eager = false }: { product: Product; eage
             <span className="text-lux-brass">★</span> {product.ratingAverage.toFixed(1)} · {product.ratingCount} review{product.ratingCount === 1 ? "" : "s"}
           </p>
         )}
-        {!soldOut && <AddToBagButton product={product} look="text" />}
+        {!soldOut && priced && <AddToBagButton product={product} look="text" />}
       </div>
     </article>
   );

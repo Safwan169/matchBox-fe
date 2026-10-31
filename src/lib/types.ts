@@ -17,7 +17,7 @@ export interface Product {
   description: string;
   categoryId: string;
   brand: string;
-  price: number; // poisha
+  price: number | null; // poisha; null = "price on request", not orderable
   compareAtPrice: number | null;
   stock: number;
   maxPerOrder: number | null; // per-order purchase limit; null = no product-specific limit

@@ -15,6 +15,9 @@ export function AddToCart({ product }: { product: Product }) {
   if (product.stock <= 0) {
     return <Button disabled className="w-full sm:w-auto">Out of stock</Button>;
   }
+  if (product.price === null) {
+    return <Button disabled className="w-full sm:w-auto">Not available to order yet</Button>;
+  }
 
   const inCart = items.find((i) => i.productId === product.id)?.quantity ?? 0;
   const limit = orderLimit(product);
