@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Jost, Ultra, Work_Sans } from "next/font/google";
-import { AGE_GATE_SCRIPT, AgeGate } from "@/components/AgeGate";
 import { AuthProvider } from "@/context/AuthContext";
 import { CartProvider } from "@/context/CartContext";
 import "./globals.css";
@@ -49,18 +48,13 @@ export const viewport: Viewport = { viewportFit: "cover", themeColor: "#0f0d0b" 
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    // suppressHydrationWarning: the age-gate script may add data-age-ok before React loads.
-    <html lang="en" className={`${ultra.variable} ${workSans.variable} ${luxSerif.variable} ${luxSerifItalic.variable} ${luxSans.variable} h-full antialiased`} suppressHydrationWarning>
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: AGE_GATE_SCRIPT }} />
-      </head>
+    <html lang="en" className={`${ultra.variable} ${workSans.variable} ${luxSerif.variable} ${luxSerifItalic.variable} ${luxSans.variable} h-full antialiased`}>
       {/* suppressHydrationWarning: browser extensions (e.g. ColorZilla) add attributes to <body>. */}
       <body className="flex min-h-full flex-col" suppressHydrationWarning>
         <AuthProvider>
           {/* The shop's header and footer live in (store)/layout; admin has its own. */}
           <CartProvider>{children}</CartProvider>
         </AuthProvider>
-        <AgeGate />
       </body>
     </html>
   );
