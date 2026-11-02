@@ -10,7 +10,8 @@ export const metadata: Metadata = {
 
 export default async function DeliveryPage() {
   const settings = await getStoreSettings();
-  const tiers = [...settings.deliveryTiers].sort((a, b) => a.minItems - b.minItems);
+  // Older deployed API versions may not include deliveryTiers yet.
+  const tiers = (Array.isArray(settings.deliveryTiers) ? [...settings.deliveryTiers] : []).sort((a, b) => a.minItems - b.minItems);
   return (
     <InfoPage kicker="Help" title="Delivery & returns" intro="Discreetly packed, delivered to your door, paid on arrival.">
       <h2>Delivery fees</h2>
