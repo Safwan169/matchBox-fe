@@ -59,7 +59,7 @@ async function RelatedProducts({ params }: Pick<PageProps<"/products/[slug]">, "
   if (related.length === 0) return null;
 
   return (
-    <section aria-labelledby="related-heading" className="mt-24 border-t border-lux-ink/10 pt-20">
+    <section aria-labelledby="related-heading" className="mt-24 mb-32 border-t border-lux-ink/10 pt-20 sm:mb-48">
       <p className="text-center text-[10px] tracking-[0.35em] text-lux-stone uppercase">Complete the ritual</p>
       <h2 id="related-heading" className="mt-3 text-center font-serif text-4xl font-light sm:text-5xl">
         You may also like
