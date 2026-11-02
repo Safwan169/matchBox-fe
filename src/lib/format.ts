@@ -5,6 +5,10 @@ export function formatPrice(poisha: number) {
   return `৳${taka.toLocaleString("en-IN", { minimumFractionDigits: decimals, maximumFractionDigits: decimals })}`;
 }
 
+export function formatDeliveryFee(poisha: number) {
+  return poisha === 0 ? "Free" : formatPrice(poisha);
+}
+
 export const PRICE_ON_REQUEST = "Price on request";
 
 export function formatDate(value: string | Date) {

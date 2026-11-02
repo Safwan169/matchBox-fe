@@ -3,6 +3,7 @@
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 const options = [
+  { value: "position", label: "Recommended" },
   { value: "newest", label: "Newest" },
   { value: "price_asc", label: "Price: low to high" },
   { value: "price_desc", label: "Price: high to low" },
@@ -25,7 +26,7 @@ export function SortSelect() {
     <label className="flex items-center gap-3 text-[11px] tracking-[0.2em] uppercase">
       <span className="text-lux-stone">Sort by</span>
       <select
-        value={searchParams.get("sort") ?? "newest"}
+        value={searchParams.get("sort") ?? "position"}
         onChange={(e) => onChange(e.target.value)}
         className="cursor-pointer border-0 border-b border-lux-ink/30 bg-transparent py-1 pr-6 text-[11px] tracking-[0.2em] uppercase focus:border-lux-ink focus:outline-none"
       >

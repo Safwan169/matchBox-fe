@@ -25,6 +25,7 @@ export interface Product {
   ageRestricted: boolean;
   isFeatured: boolean;
   isActive: boolean;
+  sortOrder: number;
   ratingAverage: number;
   ratingCount: number;
   createdAt: string;
@@ -174,6 +175,13 @@ export interface StoreSettings {
   facebookUrl: string;
   instagramUrl: string;
   tiktokUrl: string;
+  deliveryTiers: DeliveryTier[];
+}
+
+export interface DeliveryTier {
+  minItems: number;
+  insideDhakaFee: number;
+  message: string;
 }
 
 export interface PageMeta {

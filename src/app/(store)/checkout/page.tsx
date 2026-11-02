@@ -32,7 +32,7 @@ export default function CheckoutPage() {
   useEffect(() => {
     if (!user || prefilled.current) return;
     prefilled.current = true;
-    setAddress((a) => ({ ...a, fullName: user.name, phone: user.phone, ...user.address }));
+    setAddress((a) => ({ ...a, fullName: user.name, phone: user.phone, ...user.address, city: "Dhaka" }));
   }, [user]);
 
   const lines = useMemo(() => cart.items.map((i) => ({ productId: i.productId, quantity: i.quantity })), [cart.items]);
@@ -106,7 +106,7 @@ export default function CheckoutPage() {
                 <Field label="Address" name="addressLine" value={address.addressLine} onChange={set("addressLine")} required minLength={5} autoComplete="street-address" placeholder="House, road, block" />
               </div>
               <Field label="Area" name="area" value={address.area} onChange={set("area")} placeholder="e.g. Dhanmondi" />
-              <Field label="City" name="city" value={address.city} onChange={set("city")} required autoComplete="address-level2" />
+              <Field label="City" name="city" value="Dhaka" readOnly hint="Delivery is currently available within Dhaka only." autoComplete="address-level2" />
               <Field label="Postal code" name="postalCode" value={address.postalCode} onChange={set("postalCode")} autoComplete="postal-code" />
             </div>
             <label className="mt-4 flex items-center gap-3 text-sm">

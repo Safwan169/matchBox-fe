@@ -23,7 +23,7 @@ export const FALLBACK_SECTIONS: HomeSection[] = [
   { id: "services", type: "services", title: "", config: {} },
 ];
 
-const EMPTY_SETTINGS: StoreSettings = { phone: "", whatsapp: "", email: "", address: "", facebookUrl: "", instagramUrl: "", tiktokUrl: "" };
+const EMPTY_SETTINGS: StoreSettings = { phone: "", whatsapp: "", email: "", address: "", facebookUrl: "", instagramUrl: "", tiktokUrl: "", deliveryTiers: [] };
 
 export async function getHomeSections(): Promise<HomeSection[]> {
   "use cache";

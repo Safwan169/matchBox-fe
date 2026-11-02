@@ -15,8 +15,8 @@ export default function FaqPage() {
 
       <h2>How much is delivery?</h2>
       <p>
-        Delivery is ৳60 inside Dhaka and ৳120 elsewhere in Bangladesh, and complimentary on orders of ৳3,000 or more. The exact amount is
-        shown at checkout before you confirm.
+        We currently deliver within Dhaka. The fee depends on the number of items in your cart. Your current fee and any next-tier savings are
+        shown in your cart, and the final amount is confirmed at checkout.
       </p>
 
       <h2>Who can order?</h2>

@@ -1,20 +1,22 @@
 import type { Metadata } from "next";
 import { InfoPage } from "@/components/InfoPage";
+import { getStoreSettings } from "@/lib/store-data";
+import { formatDeliveryFee } from "@/lib/format";
 
 export const metadata: Metadata = {
   title: "Delivery & returns",
   description: "Delivery fees, discreet packaging and returns at MatchBox.",
 };
 
-export default function DeliveryPage() {
+export default async function DeliveryPage() {
+  const settings = await getStoreSettings();
+  const tiers = [...settings.deliveryTiers].sort((a, b) => a.minItems - b.minItems);
   return (
     <InfoPage kicker="Help" title="Delivery & returns" intro="Discreetly packed, delivered to your door, paid on arrival.">
       <h2>Delivery fees</h2>
-      <ul>
-        <li>Inside Dhaka: ৳60</li>
-        <li>Outside Dhaka: ৳120</li>
-        <li>Orders of ৳3,000 or more: complimentary, anywhere in Bangladesh</li>
-      </ul>
+      <p>We currently deliver within Dhaka. Your delivery fee depends on the number of items in your cart. Adding items may unlock a lower fee.</p>
+      <ul>{tiers.map((tier) => <li key={tier.minItems}>Cart with {tier.minItems}{tier.minItems > 1 ? "+" : ""} {tier.minItems === 1 ? "item" : "items"}: {formatDeliveryFee(tier.insideDhakaFee)} within Dhaka</li>)}</ul>
+      <p>The cart shows your current fee and any savings available by adding another item. Your final delivery charge is confirmed at checkout.</p>
 
       <h2>Packaging</h2>
       <p>Every order is sent in plain, sealed packaging with nothing on the outside to show what is inside.</p>

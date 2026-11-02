@@ -74,8 +74,8 @@ export function LuxHeader({ links, menuCategories, className = "" }: { links: Na
   return (
     <header className={`lux-header fixed inset-x-0 top-0 z-50 ${className}`} data-solid={solid ? "" : undefined}>
       <div className="flex h-8 items-center justify-center bg-lux-ink px-4 text-[10px] tracking-[0.2em] whitespace-nowrap text-lux-brass-light uppercase sm:tracking-[0.3em]">
-        <span className="sm:hidden">Free delivery over ৳3,000</span>
-        <span className="hidden sm:inline">Complimentary delivery on orders over ৳3,000</span>
+        <span className="sm:hidden">Dhaka delivery · lower fees when you add more</span>
+        <span className="hidden sm:inline">Dhaka delivery · your fee depends on the number of items in your cart</span>
       </div>
       <div className="lux-header-bar">
         <div className="mx-auto grid h-16 max-w-7xl grid-cols-[1fr_auto_1fr] items-center px-4 sm:h-20 sm:px-8">
