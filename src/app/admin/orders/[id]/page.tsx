@@ -78,7 +78,7 @@ function AdminOrder() {
                   <p className="mt-2 text-sm">
                     {order.customer.name}
                     <br />
-                    {order.customer.email}
+                    {order.customer.email || order.customer.phone || "Guest checkout"}
                     <br />
                     <span className="text-brand-brown">Born {formatDate(order.customer.dateOfBirth)}</span>
                   </p>

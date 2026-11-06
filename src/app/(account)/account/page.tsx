@@ -50,7 +50,7 @@ export default function AccountPage() {
         <ul className="mt-2 divide-y divide-brand-brown/10 bg-white/70">
           <MenuRow href="/orders" icon={<BoxIcon />} label="My Orders" />
           <MenuRow href="/account/address" icon={<MapPinIcon />} label="Address Book" hint={address || "Add your delivery address"} />
-          <MenuRow href="/account/profile" icon={<UserIcon />} label="Account Information" hint={user.phone || user.email} />
+          <MenuRow href="/account/profile" icon={<UserIcon />} label="Account Information" hint={user.phone || user.email || "Profile"} />
           <MenuRow href="/account/password" icon={<LockIcon />} label="Change Password" />
           {user.role === "admin" && <MenuRow href="/admin" icon={<DashboardIcon />} label="Admin dashboard" />}
         </ul>

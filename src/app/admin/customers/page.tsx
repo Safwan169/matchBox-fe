@@ -34,7 +34,7 @@ export default function AdminCustomersPage() {
         {data?.data.map((u) => (
           <tr key={u.id} className="hover:bg-brand-brown/5">
             <td className="px-4 py-3 font-semibold">{u.name}</td>
-            <td className="px-4 py-3">{u.email}</td>
+            <td className="px-4 py-3">{u.email || "—"}</td>
             <td className="px-4 py-3">{u.phone || "—"}</td>
             <td className="px-4 py-3">{u.orderCount}</td>
             <td className="px-4 py-3 whitespace-nowrap">{formatDate(u.createdAt)}</td>

@@ -12,7 +12,7 @@ export default function AdminAccountPage() {
     <div className="space-y-6">
       <PageTitle>My account</PageTitle>
       <p className="text-sm text-brand-brown">
-        Signed in as <span className="font-semibold">{user.email}</span>.
+        Signed in as <span className="font-semibold">{user.email || user.phone}</span>.
       </p>
       <div className="grid gap-6 lg:grid-cols-2">
         <ProfileForm user={user} onSaved={setUser} />

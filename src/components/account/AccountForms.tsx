@@ -33,7 +33,7 @@ export function ProfileForm({ user, onSaved }: { user: User; onSaved(user: User)
       <h2 className="text-lg font-semibold">Profile</h2>
       <form onSubmit={onSubmit} className="mt-4 space-y-4">
         {status && <Alert kind={status.kind}>{status.text}</Alert>}
-        <Field label="Email" name="email" value={user.email} disabled readOnly />
+        <Field label="Email" name="email" value={user.email ?? "Not provided"} disabled readOnly />
         <Field label="Full name" name="name" defaultValue={user.name} required minLength={2} />
         <Field label="Mobile number" name="phone" type="tel" defaultValue={user.phone} required pattern={BD_PHONE_PATTERN} hint={BD_PHONE_HINT} />
         <Button type="submit" disabled={saving}>

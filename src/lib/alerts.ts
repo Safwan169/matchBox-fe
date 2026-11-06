@@ -1,4 +1,4 @@
-// SweetAlert2 popups for the admin, restyled in globals.css (`.mb-swal-*`) to fit DESIGN.md:
+// SweetAlert2 popups, restyled in globals.css (`.mb-swal-*`) to fit DESIGN.md:
 // square corners, hairline border, no shadow, ink/ivory/brass. Loaded on demand so the
 // library stays out of the shop's bundles.
 

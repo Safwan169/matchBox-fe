@@ -29,7 +29,7 @@ export function RegisterForm() {
     try {
       await register({
         name: String(form.get("name")),
-        email: String(form.get("email")),
+        email: String(form.get("email") ?? "").trim() || undefined,
         phone: String(form.get("phone") ?? ""),
         dateOfBirth: String(form.get("dateOfBirth")),
         password,
@@ -45,7 +45,7 @@ export function RegisterForm() {
     <form onSubmit={onSubmit} className="mt-6 space-y-4">
       <Alert>{error}</Alert>
       <Field label="Full name" name="name" autoComplete="name" required minLength={2} />
-      <Field label="Email" name="email" type="email" autoComplete="email" required />
+      <Field label="Email (optional)" name="email" type="email" autoComplete="email" />
       <Field label="Mobile number" name="phone" type="tel" autoComplete="tel" placeholder="01XXXXXXXXX" required pattern={BD_PHONE_PATTERN} hint={BD_PHONE_HINT} />
       <Field label="Date of birth" name="dateOfBirth" type="date" required hint="Used to confirm you are 18 or older." />
       <Field label="Password" name="password" type="password" autoComplete="new-password" required minLength={8} hint="At least 8 characters." />

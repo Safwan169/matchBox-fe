@@ -1,11 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { OrderTotals } from "@/components/order/OrderSummary";
 import { Alert, Button, Card, Field, PageTitle, TextArea, buttonClass, errorMessage } from "@/components/ui";
-import { useRequireAuth } from "@/context/AuthContext";
+import { useAuth } from "@/context/AuthContext";
 import { useCart } from "@/context/CartContext";
 import { api } from "@/lib/api";
 import { formatPrice } from "@/lib/format";
@@ -15,9 +14,8 @@ import type { ApiItem, Order, OrderQuote, ShippingAddress, User } from "@/lib/ty
 const emptyAddress: ShippingAddress = { fullName: "", phone: "", addressLine: "", area: "", city: "Dhaka", postalCode: "" };
 
 export default function CheckoutPage() {
-  const { user, allowed, setUser } = useRequireAuth();
+  const { user, setUser } = useAuth();
   const cart = useCart();
-  const router = useRouter();
 
   const [address, setAddress] = useState<ShippingAddress>(emptyAddress);
   const [saveAddress, setSaveAddress] = useState(true);
@@ -26,6 +24,7 @@ export default function CheckoutPage() {
   const [quoteError, setQuoteError] = useState("");
   const [submitError, setSubmitError] = useState("");
   const [placing, setPlacing] = useState(false);
+  const [completedOrder, setCompletedOrder] = useState<Order | null>(null);
   const prefilled = useRef(false);
 
   // Prefill once from the account: name, phone and saved delivery address.
@@ -39,7 +38,7 @@ export default function CheckoutPage() {
 
   // Live quote from the server (authoritative prices + delivery fee).
   useEffect(() => {
-    if (!allowed || lines.length === 0) return;
+    if (!cart.ready || lines.length === 0) return;
     const timer = setTimeout(() => {
       api<ApiItem<OrderQuote>>("/orders/quote", { method: "POST", body: { items: lines, city: address.city } })
         .then((r) => {
@@ -52,9 +51,19 @@ export default function CheckoutPage() {
         });
     }, 300);
     return () => clearTimeout(timer);
-  }, [allowed, lines, address.city]);
+  }, [cart.ready, lines, address.city]);
 
-  if (!allowed) return <p className="mx-auto w-full max-w-6xl px-4 py-12 text-brand-brown">Loading…</p>;
+  if (completedOrder) {
+    return (
+      <section className="mx-auto w-full max-w-2xl px-4 py-16 text-center">
+        <p className="text-sm font-semibold uppercase tracking-widest text-brand-red">Order received</p>
+        <PageTitle>Thank you, {completedOrder.shippingAddress.fullName}</PageTitle>
+        <p className="mt-4 text-brand-brown">Your order number is <strong className="text-brand-charcoal">{completedOrder.orderNumber}</strong>. We’ll contact you at {completedOrder.shippingAddress.phone} to confirm delivery.</p>
+        {completedOrder.userId && <Link href={`/orders/${completedOrder.id}`} className={buttonClass("primary", "mt-7")}>View order</Link>}
+        <div><Link href="/products" className="mt-5 inline-block text-sm font-semibold text-brand-red hover:underline">Continue shopping</Link></div>
+      </section>
+    );
+  }
 
   if (cart.ready && cart.items.length === 0) {
     return (
@@ -79,12 +88,12 @@ export default function CheckoutPage() {
         method: "POST",
         body: { items: lines, shippingAddress: address, notes, saveAddress },
       });
-      if (saveAddress) {
+      if (saveAddress && user) {
         // Refresh the account so the saved address shows up everywhere.
         api<ApiItem<User>>("/auth/me").then((r) => setUser(r.data)).catch(() => {});
       }
       cart.clear();
-      router.replace(`/orders/${order.id}?placed=1`);
+      setCompletedOrder(order);
     } catch (err) {
       setSubmitError(errorMessage(err));
       setPlacing(false);
@@ -94,6 +103,7 @@ export default function CheckoutPage() {
   return (
     <section className="mx-auto w-full max-w-6xl px-4 py-10">
       <PageTitle>Checkout</PageTitle>
+      {!user && <p className="mt-2 text-sm text-brand-brown">Want faster checkouts and a handy record of your purchases? <Link href={`/login?next=${encodeURIComponent("/checkout")}`} className="font-semibold text-brand-red hover:underline">Log in</Link> to save your address and keep your order history in one place.</p>}
 
       <form onSubmit={onSubmit} className="mt-6 grid gap-8 lg:grid-cols-[1fr_360px]">
         <div className="space-y-6">
@@ -103,16 +113,14 @@ export default function CheckoutPage() {
               <Field label="Full name" name="fullName" value={address.fullName} onChange={set("fullName")} required minLength={2} autoComplete="name" />
               <Field label="Mobile number" name="phone" type="tel" value={address.phone} onChange={set("phone")} required pattern={BD_PHONE_PATTERN} hint={BD_PHONE_HINT} autoComplete="tel" placeholder="01XXXXXXXXX" />
               <div className="sm:col-span-2">
-                <Field label="Address" name="addressLine" value={address.addressLine} onChange={set("addressLine")} required minLength={5} autoComplete="street-address" placeholder="House, road, block" />
+                <Field label="Address (optional)" name="addressLine" value={address.addressLine} onChange={set("addressLine")} autoComplete="street-address" placeholder="House, road, block" />
               </div>
-              <Field label="Area" name="area" value={address.area} onChange={set("area")} placeholder="e.g. Dhanmondi" />
-              <Field label="City" name="city" value="Dhaka" readOnly hint="Delivery is currently available within Dhaka only." autoComplete="address-level2" />
-              <Field label="Postal code" name="postalCode" value={address.postalCode} onChange={set("postalCode")} autoComplete="postal-code" />
             </div>
-            <label className="mt-4 flex items-center gap-3 text-sm">
+            <p className="mt-3 text-xs text-brand-brown">Address details are optional. Delivery is currently available within Dhaka; we’ll call to confirm the details.</p>
+            {user && address.addressLine.trim().length >= 5 && <label className="mt-4 flex items-center gap-3 text-sm">
               <input type="checkbox" checked={saveAddress} onChange={(e) => setSaveAddress(e.target.checked)} className="h-4 w-4 accent-brand-red" />
               Save this address to my account for next time
-            </label>
+            </label>}
             <div className="mt-4">
               <TextArea label="Order notes (optional)" name="notes" rows={2} maxLength={500} value={notes} onChange={(e) => setNotes(e.target.value)} />
             </div>

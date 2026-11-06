@@ -5,11 +5,13 @@ import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { Alert, Button, Card, Field, Select, TextArea, errorMessage } from "@/components/ui";
 import type { AdminCategory } from "@/lib/admin-types";
-import { api } from "@/lib/api";
+import { api, ApiError } from "@/lib/api";
 import { notifyAdded } from "@/lib/alerts";
 import type { ApiItem, Product } from "@/lib/types";
 import { useAdminApi } from "@/components/admin/AdminShell";
 import { ImageUploader } from "./ImageUploader";
+import { ProductImage } from "@/components/product/ProductImage";
+import { AdminDialog } from "@/components/admin/AdminDialog";
 
 // Prices are entered in taka and stored in poisha.
 const toTaka = (poisha: number | null | undefined) => (poisha == null ? "" : String(poisha / 100));
@@ -22,6 +24,7 @@ export function ProductForm({ product }: { product?: Product }) {
   const [error, setError] = useState("");
   const [saved, setSaved] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [existingProduct, setExistingProduct] = useState<Product | null>(null);
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -29,11 +32,8 @@ export function ProductForm({ product }: { product?: Product }) {
     const compareAt = String(f.get("compareAtPrice") ?? "").trim();
     const price = String(f.get("price") ?? "").trim();
     const maxPerOrder = String(f.get("maxPerOrder") ?? "").trim();
-    const slug = String(f.get("slug") ?? "").trim();
-
     const body = {
       name: f.get("name"),
-      ...(slug ? { slug } : {}),
       categoryId: f.get("categoryId"),
       brand: f.get("brand"),
       description: f.get("description"),
@@ -49,6 +49,7 @@ export function ProductForm({ product }: { product?: Product }) {
 
     setSaving(true);
     setError("");
+    setExistingProduct(null);
     setSaved(false);
     try {
       if (product) {
@@ -60,7 +61,15 @@ export function ProductForm({ product }: { product?: Product }) {
         void notifyAdded("Product added", `"${data.name}" is now in your catalogue.`);
       }
     } catch (err) {
-      setError(errorMessage(err));
+      if (err instanceof ApiError && err.details && typeof err.details === "object") {
+        const details = err.details as { kind?: string; item?: Product };
+        if (details.kind === "product" && details.item) {
+          setExistingProduct(details.item);
+          setError("");
+        } else setError(errorMessage(err));
+      } else {
+        setError(errorMessage(err));
+      }
     } finally {
       setSaving(false);
     }
@@ -81,7 +90,6 @@ export function ProductForm({ product }: { product?: Product }) {
       <div className="space-y-6">
         <Card className="space-y-4">
           <Field label="Name" name="name" defaultValue={product?.name} required minLength={2} maxLength={120} />
-          <Field label="URL slug" name="slug" defaultValue={product?.slug} pattern="[a-z0-9]+(-[a-z0-9]+)*" hint="Leave empty to generate from the name. Lowercase letters, numbers and dashes." />
           <div className="grid gap-4 sm:grid-cols-2">
             <Select label="Category" name="categoryId" defaultValue={product?.categoryId} required key={cats ? "loaded" : "loading"}>
               <option value="">Choose…</option>
@@ -115,6 +123,22 @@ export function ProductForm({ product }: { product?: Product }) {
         </Card>
         <div className="space-y-3">
           <Alert>{error}</Alert>
+          {existingProduct && <AdminDialog title="Product already exists" onClose={() => setExistingProduct(null)}>
+            <p className="text-sm text-brand-brown">There’s already a product with this name. Review the existing product or edit it in your catalogue.</p>
+            <div className="flex gap-3">
+              <ProductImage src={existingProduct.images[0]} alt={existingProduct.name} className="w-24 shrink-0 rounded" />
+              <div className="min-w-0 text-sm">
+                <p className="text-lg font-semibold">{existingProduct.name}</p>
+                <p className="text-brand-brown">Brand: {existingProduct.brand || "—"}</p>
+                <p className="text-brand-brown">Stock: {existingProduct.stock}</p>
+                <p className="text-brand-brown">Status: {existingProduct.isActive ? "Visible in store" : "Hidden"}</p>
+              </div>
+            </div>
+            <div className="mt-5 flex flex-wrap gap-3">
+              <Link href={`/admin/products/${existingProduct.id}`} className="inline-flex items-center justify-center rounded-md bg-brand-charcoal px-4 py-2 text-sm font-semibold text-white hover:bg-brand-red">Open existing product</Link>
+              <button type="button" onClick={() => setExistingProduct(null)} className="rounded-md border border-brand-brown/30 px-4 py-2 text-sm font-semibold hover:bg-brand-brown/5">Keep editing</button>
+            </div>
+          </AdminDialog>}
           {saved && <Alert kind="success">Saved.</Alert>}
           <Button type="submit" disabled={saving} className="w-full">
             {saving ? "Saving…" : product ? "Save changes" : "Create product"}

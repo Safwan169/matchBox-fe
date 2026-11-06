@@ -7,7 +7,7 @@ import type { ApiItem, User } from "@/lib/types";
 
 export interface RegisterInput {
   name: string;
-  email: string;
+  email?: string;
   phone: string;
   dateOfBirth: string; // YYYY-MM-DD
   password: string;
@@ -16,7 +16,7 @@ export interface RegisterInput {
 interface AuthContextValue {
   user: User | null;
   loading: boolean;
-  login(email: string, password: string): Promise<User>;
+  login(identifier: string, password: string): Promise<User>;
   register(input: RegisterInput): Promise<User>;
   logout(): Promise<void>;
   setUser(user: User): void;
@@ -36,8 +36,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       .finally(() => setLoading(false));
   }, []);
 
-  const login = useCallback(async (email: string, password: string) => {
-    const { data } = await api<ApiItem<User>>("/auth/login", { method: "POST", body: { email, password } });
+  const login = useCallback(async (identifier: string, password: string) => {
+    const { data } = await api<ApiItem<User>>("/auth/login", { method: "POST", body: { identifier, password } });
     setUser(data);
     return data;
   }, []);

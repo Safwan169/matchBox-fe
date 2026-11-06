@@ -5,6 +5,7 @@ import { useState } from "react";
 import { QuantityInput } from "@/components/QuantityInput";
 import { Button } from "@/components/ui";
 import { orderLimit, useCart } from "@/context/CartContext";
+import { notifyAdded } from "@/lib/alerts";
 import type { Product } from "@/lib/types";
 
 export function AddToCart({ product }: { product: Product }) {
@@ -36,6 +37,7 @@ export function AddToCart({ product }: { product: Product }) {
             add(product, Math.min(quantity, remaining));
             setQuantity(1);
             setAdded(true);
+            void notifyAdded("Added to your bag", `${product.name} is in your bag.`);
           }}
         >
           {remaining <= 0 ? (limitReached ? "Order limit in your bag" : "All stock in your bag") : "Add to bag"}

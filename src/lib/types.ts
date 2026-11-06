@@ -64,7 +64,7 @@ export interface SavedAddress {
 export interface User {
   id: string;
   name: string;
-  email: string;
+  email: string | null;
   phone: string;
   address: SavedAddress | null;
   role: UserRole;
@@ -97,7 +97,7 @@ export interface OrderItem {
 export interface Order {
   id: string;
   orderNumber: string;
-  userId: string;
+  userId: string | null;
   items: OrderItem[];
   subtotal: number;
   shippingFee: number;

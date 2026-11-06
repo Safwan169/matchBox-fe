@@ -20,7 +20,7 @@ export function LoginForm() {
     setSubmitting(true);
     setError("");
     try {
-      await login(String(form.get("email")), String(form.get("password")));
+      await login(String(form.get("identifier")), String(form.get("password")));
       router.replace(next);
     } catch (err) {
       setError(errorMessage(err));
@@ -31,7 +31,7 @@ export function LoginForm() {
   return (
     <form onSubmit={onSubmit} className="mt-6 space-y-4">
       <Alert>{error}</Alert>
-      <Field label="Email" name="email" type="email" autoComplete="email" required />
+      <Field label="Phone number or email" name="identifier" type="text" autoComplete="username" placeholder="01XXXXXXXXX or you@example.com" required />
       <Field label="Password" name="password" type="password" autoComplete="current-password" required />
       <Button type="submit" disabled={submitting} className="w-full">
         {submitting ? "Logging in…" : "Log in"}

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { BagLine } from "@/components/luxury/icons";
 import { useCart } from "@/context/CartContext";
+import { notifyAdded } from "@/lib/alerts";
 import type { Product } from "@/lib/types";
 
 /**
@@ -16,6 +17,7 @@ export function AddToBagButton({ product, look }: { product: Product; look: "ove
   function addToBag() {
     add(product, 1);
     setAdded(true);
+    void notifyAdded("Added to your bag", `${product.name} is in your bag.`);
     setTimeout(() => setAdded(false), 1800);
   }
 

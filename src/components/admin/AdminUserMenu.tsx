@@ -17,7 +17,7 @@ export function AdminUserMenu() {
 
   return (
     <div className="flex items-center gap-3 sm:gap-5">
-      <Link href="/admin/account" className="admin-account-link flex items-center gap-2 text-xs" title={user.email}>
+      <Link href="/admin/account" className="admin-account-link flex items-center gap-2 text-xs" title={user.email || user.phone}>
         <span aria-hidden="true" className="admin-account-mark flex size-8 items-center justify-center border border-lux-ink/15 font-serif text-base">
           {user.name.trim().charAt(0).toUpperCase()}
         </span>
