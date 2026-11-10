@@ -35,6 +35,10 @@ const linkGroups = [
     ],
   },
   {
+    label: "Social",
+    links: [{ href: "/admin/facebook", label: "Facebook posts", icon: "facebook" }],
+  },
+  {
     label: "Account",
     links: [{ href: "/admin/account", label: "My account", icon: "account" }],
   },
@@ -119,6 +123,7 @@ function AdminNavIcon({ name }: { name: AdminNavIconName }) {
       {name === "categories" && <><path d="M3 5h18M3 12h18M3 19h18" /><circle cx="7" cy="5" r="1.5" /><circle cx="16" cy="12" r="1.5" /><circle cx="10" cy="19" r="1.5" /></>}
       {name === "home" && <><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z" /></>}
       {name === "promotions" && <><path d="M3 11v2h4l10 5V6L7 11zM7 13l1.5 6h3L10 14M20 9l2-2M20 15l2 2" /></>}
+      {name === "facebook" && <><path d="M14 21v-8h3l.5-4H14V7c0-1.2.4-2 2-2h1.7V1.4C17 1.2 15.8 1 14.3 1 11 1 9 3 9 6.7V9H6v4h3v8z" transform="translate(2 0) scale(.9)" /></>}
       {name === "settings" && <><circle cx="12" cy="12" r="3" /><path d="m19.4 15 .1.1 1.4 1.1-1.4 2.4-1.7-.7a8 8 0 0 1-1.6.9l-.3 1.8h-2.8l-.3-1.8a8 8 0 0 1-1.6-.9l-1.7.7-1.4-2.4 1.4-1.1a7 7 0 0 1 0-1.9l-1.4-1.1 1.4-2.4 1.7.7a8 8 0 0 1 1.6-.9l.3-1.8h2.8l.3 1.8a8 8 0 0 1 1.6.9l1.7-.7 1.4 2.4-1.4 1.1a7 7 0 0 1-.1 1.8z" transform="translate(-1 -1)" /></>}
       {name === "account" && <><circle cx="12" cy="8" r="3.5" /><path d="M4 21a8 8 0 0 1 16 0" /></>}
     </svg>
