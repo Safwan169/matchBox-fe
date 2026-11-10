@@ -119,6 +119,7 @@ export default function FacebookPostsPage() {
           <div>
             <p className="font-semibold">Products selected <span className="font-normal text-brand-brown">({selected.length}/10)</span></p>
             <p className="text-xs text-brand-brown">Choose visible products that have a photo.</p>
+            {selected.length === 10 && <p role="status" className="mt-2 text-sm font-medium text-green-800">You’ve selected the maximum 10 products. Your post is ready to publish.</p>}
           </div>
           <Button type="button" variant="outline" onClick={() => setPickerOpen(true)}>Choose products</Button>
         </div>
@@ -264,6 +265,7 @@ function ProductPickerDialog({ selectedIds, onToggle, onClose }: {
       <span>{products.length} products loaded</span>
       <span>{selectedIds.size}/10 selected</span>
     </div>
+    {selectedIds.size === 10 && <p role="status" className="mb-3 border border-lux-brass/40 bg-lux-brass/10 px-3 py-2 text-sm text-lux-ink">You’ve selected all 10 products allowed in one post. Click Done, then publish.</p>}
     <div className="max-h-[58vh] min-h-56 overflow-y-auto overscroll-contain rounded-md border border-brand-brown/15" onScroll={onListScroll}>
       {products.length === 0 && !loading && !loadError && <p className="p-8 text-center text-sm text-brand-brown">No products found. Try another search.</p>}
       <ul className="divide-y divide-brand-brown/10">
