@@ -58,6 +58,8 @@ export default function FacebookPostsPage() {
         body: { productIds, message: postMessage },
       });
       setPublished(data);
+      setSelected([]);
+      setMessage("");
       reloadHistory();
     } catch (err) {
       setPublishError(errorMessage(err));
@@ -139,7 +141,7 @@ export default function FacebookPostsPage() {
 
       <div className="space-y-3">
         <Alert>{publishError}</Alert>
-        {published && <Alert kind="success">Published {published.productCount} {published.productCount === 1 ? "product" : "products"} to Facebook. <a className="ml-1 font-semibold underline" href={published.postUrl} target="_blank" rel="noreferrer">View post</a></Alert>}
+        {published && <Alert kind="success">Published {published.productCount} {published.productCount === 1 ? "product" : "products"} to Facebook. <a className="ml-1 font-semibold underline" href={published.postUrl} target="_blank" rel="noreferrer">View post</a>. The product selection and message were cleared for your next post.</Alert>}
         <div className="flex flex-wrap items-center justify-between gap-3">
           <p className="text-xs text-brand-brown">Product links in the post point to {facebookStatus?.data.storeUrl ?? "your store"}.</p>
           <Button type="button" disabled={publishing || selected.length === 0 || !facebookStatus?.data.configured} onClick={() => void publish()}>
